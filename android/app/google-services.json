@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "628192760549",
+    "firebase_url": "https://sendroid-f3a1b.firebaseio.com",
+    "project_id": "sendroid-f3a1b",
+    "storage_bucket": "sendroid-f3a1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628192760549:android:67a7ec1cbc0ebbb9",
+        "android_client_info": {
+          "package_name": "com.sendroids.sendroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628192760549-24s5ej18mtu8s8qe9kco8b0u21tnh3vf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLNDUbrh_MuW-fXubd-iYBs-EcrdKlwuo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
