@@ -87,8 +87,11 @@ public class ReactFireBaseMessagingService extends FirebaseMessagingService {
             try {
                 JSONObject data = new JSONObject(formData);
                 String title = data.getString("title");
+//                String address = data.getString("address");
+
                 pushNotification.putExtra("title", title);
                 pushNotification.putExtra("message", message);
+//                pushNotification.putExtra("address", address);
 
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 

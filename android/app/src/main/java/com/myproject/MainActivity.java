@@ -5,41 +5,28 @@ import android.app.PendingIntent;
 import android.app.NotificationManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Icon;
-import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.support.v4.app.NotificationCompat;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.myproject.utils.Config;
-import com.myproject.utils.Constant;
 import com.myproject.utils.NotificationUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static com.facebook.common.internal.ByteStreams.copy;
 
 public class MainActivity extends ReactActivity {
 
@@ -70,8 +57,10 @@ public class MainActivity extends ReactActivity {
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
 
+                    String iconUrl = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=651475608,268057290&fm=27&gp=0.jpg";
                     String notifiMessage = intent.getStringExtra("message");
                     String notifiTitle = intent.getStringExtra("title");
+//                    String notifiAddress = intent.getStringExtra("address");
 
                     Toast.makeText(getApplicationContext(), "Push Title: " + notifiTitle, Toast.LENGTH_LONG).show();
                     Toast.makeText(getApplicationContext(), "Push message: " + notifiMessage, Toast.LENGTH_LONG).show();
@@ -84,7 +73,7 @@ public class MainActivity extends ReactActivity {
                     compat.setWhen(System.currentTimeMillis());
                     compat.setContentIntent(intentPend);
                     compat.setSmallIcon(R.mipmap.sendroid);
-                    compat.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                    compat.setLargeIcon(urlToBitmap(iconUrl));
                     compat.setOnlyAlertOnce(true);
                     compat.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fcmsound));
                     compat.setAutoCancel(true);
@@ -113,25 +102,50 @@ public class MainActivity extends ReactActivity {
             Toast.makeText(this, "Firebase Reg Id is not received yet!", Toast.LENGTH_SHORT).show();
     }
 
-    private Bitmap urlToBitmap(String url){
+    private Bitmap urlToBitmap(String imageUri){
+//        Bitmap bitmap;
+//        InputStream in;
+//        BufferedOutputStream out;
+//        try {
+//            in = new BufferedInputStream(new URL(url).openStream(), Constant.IO_BUFFER_SIZE);
+//            final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
+//            out = new BufferedOutputStream(dataStream, Constant.IO_BUFFER_SIZE);
+//            copy(in, out);
+//            out.flush();
+//            byte[] data = dataStream.toByteArray();
+//            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//            return bitmap;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+        // 显示网络上的图片
         Bitmap bitmap = null;
-        InputStream in = null;
-        BufferedOutputStream out = null;
+        HttpURLConnection conn = null;
         try {
-
-            in = new BufferedInputStream(new URL(url).openStream(), Constant.IO_BUFFER_SIZE);
-            final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-            out = new BufferedOutputStream(dataStream, Constant.IO_BUFFER_SIZE);
-            copy(in, out);
-            out.flush();
-            byte[] data = dataStream.toByteArray();
-            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            data = null;
-            return bitmap;
+            URL myFileUrl = new URL(imageUri);
+            conn = (HttpURLConnection) myFileUrl.openConnection();
+            conn.setConnectTimeout(10000);// 设置链接超时
+            conn.setReadTimeout(5000);
+            conn.setRequestMethod("GET");// 设置请求方法为get
+            conn.connect();
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                InputStream is = conn.getInputStream();
+                bitmap = BitmapFactory.decodeStream(is);
+                is.close();
+                return bitmap;
+            }
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+        }finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
+        return null;
     }
 
     @Override
