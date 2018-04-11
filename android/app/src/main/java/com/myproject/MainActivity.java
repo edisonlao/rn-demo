@@ -27,11 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Vector;
 
 public class MainActivity extends ReactActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private Bitmap bitmap;
+    private int notifiIndex = 0;
 
     @Override
     protected String getMainComponentName() {
@@ -57,30 +60,49 @@ public class MainActivity extends ReactActivity {
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
 
-                    String iconUrl = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=651475608,268057290&fm=27&gp=0.jpg";
+                    final String iconUrl = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=651475608,268057290&fm=27&gp=0.jpg";
                     String notifiMessage = intent.getStringExtra("message");
                     String notifiTitle = intent.getStringExtra("title");
 //                    String notifiAddress = intent.getStringExtra("address");
 
-                    Toast.makeText(getApplicationContext(), "Push Title: " + notifiTitle, Toast.LENGTH_LONG).show();
-                    Toast.makeText(getApplicationContext(), "Push message: " + notifiMessage, Toast.LENGTH_LONG).show();
-
                     NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     PendingIntent intentPend = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                    NotificationCompat.Builder compat = new NotificationCompat.Builder(context);
-                    compat.setContentTitle(notifiTitle);
-                    compat.setContentText(notifiMessage);
-                    compat.setWhen(System.currentTimeMillis());
-                    compat.setContentIntent(intentPend);
-                    compat.setSmallIcon(R.mipmap.sendroid);
-//                    compat.setLargeIcon(urlToBitmap(iconUrl));
-                    compat.setOnlyAlertOnce(true);
-                    compat.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fcmsound));
-                    compat.setAutoCancel(true);
-                    compat.setPriority(NotificationCompat.PRIORITY_MAX);
-                    Notification notification = compat.build();
-                    manager.notify(1, notification);
+                    final NotificationCompat.Builder compat = new NotificationCompat.Builder(context);
+                    compat.setContentTitle(notifiTitle)
+                    .setContentText(notifiMessage)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentIntent(intentPend)
+                    .setSmallIcon(R.mipmap.sendroid);
 
+                    //android 4.0之后不允许在主线程HttpURLConnection,
+                    // 需要子线程执行HttpURLConnection，等待子线程结束，再启动主线程
+                    Vector<Thread> threadVector = new Vector<>();
+                    Thread iconThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 在线图片转Bitmap
+                            urlToBitmap(iconUrl);
+                        }
+                    });
+                    threadVector.add(iconThread);
+                    iconThread.start();
+                    for (Thread thread : threadVector) {
+                        try {
+                            thread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    compat.setLargeIcon(bitmap)
+                    .setOnlyAlertOnce(true)
+                    .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fcmsound))
+                    .setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_MAX);
+
+                    Notification notification = compat.build();
+                    notification.contentView.setImageViewBitmap(10, bitmap);
+                    manager.notify(notifiIndex++, notification);
+                    bitmap = null;
                 }
             }
         };
@@ -102,25 +124,7 @@ public class MainActivity extends ReactActivity {
             Toast.makeText(this, "Firebase Reg Id is not received yet!", Toast.LENGTH_SHORT).show();
     }
 
-    private Bitmap urlToBitmap(String imageUri){
-//        Bitmap bitmap;
-//        InputStream in;
-//        BufferedOutputStream out;
-//        try {
-//            in = new BufferedInputStream(new URL(url).openStream(), Constant.IO_BUFFER_SIZE);
-//            final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-//            out = new BufferedOutputStream(dataStream, Constant.IO_BUFFER_SIZE);
-//            copy(in, out);
-//            out.flush();
-//            byte[] data = dataStream.toByteArray();
-//            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-//            return bitmap;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-        // 显示网络上的图片
-        Bitmap bitmap = null;
+    private Bitmap urlToBitmap(final String imageUri) {
         HttpURLConnection conn = null;
         try {
             URL myFileUrl = new URL(imageUri);
@@ -134,18 +138,17 @@ public class MainActivity extends ReactActivity {
                 InputStream is = conn.getInputStream();
                 bitmap = BitmapFactory.decodeStream(is);
                 is.close();
-                return bitmap;
             }
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
-        return null;
+        return bitmap;
     }
 
     @Override
