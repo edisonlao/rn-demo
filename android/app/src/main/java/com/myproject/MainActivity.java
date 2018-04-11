@@ -73,7 +73,7 @@ public class MainActivity extends ReactActivity {
                     compat.setWhen(System.currentTimeMillis());
                     compat.setContentIntent(intentPend);
                     compat.setSmallIcon(R.mipmap.sendroid);
-                    compat.setLargeIcon(urlToBitmap(iconUrl));
+//                    compat.setLargeIcon(urlToBitmap(iconUrl));
                     compat.setOnlyAlertOnce(true);
                     compat.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fcmsound));
                     compat.setAutoCancel(true);
