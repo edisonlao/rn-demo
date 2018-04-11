@@ -10,11 +10,13 @@
 
 package com.myproject.fcm.service;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -24,6 +26,9 @@ import com.myproject.utils.NotificationUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -54,7 +59,8 @@ public class ReactFireBaseMessagingService extends FirebaseMessagingService {
             // Check if message contains a notification payload.
             if (remoteMessage.getNotification() != null) {
                 Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
-                handleNotification(remoteMessage.getNotification().getBody());
+                RemoteMessage.Notification notification = remoteMessage.getNotification();
+                handleNotification(notification.getBody(), remoteMessage.getData().toString());
             }
 
             // Check if message contains a data payload.
@@ -74,16 +80,25 @@ public class ReactFireBaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void handleNotification(String message) {
+    private void handleNotification(String message, String formData) {
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
             // app is in foreground, broadcast the push message
             Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-            pushNotification.putExtra("message", message);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+            try {
+                JSONObject data = new JSONObject(formData);
+                String title = data.getString("title");
+                pushNotification.putExtra("title", title);
+                pushNotification.putExtra("message", message);
 
-            // play notification sound
-            NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
-            notificationUtils.playNotificationSound();
+                LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+
+                // play notification sound
+                NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
+                notificationUtils.playNotificationSound();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         } else {
             // If the app is in background, firebase itself handles the notification
         }

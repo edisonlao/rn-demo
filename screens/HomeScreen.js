@@ -68,10 +68,12 @@ export default class HomeScreen extends React.Component {
     renderRow(rowData){
         return(
             <View style={styles.commodityViewItem}>
-                <Image source={require('../assets/images/user.png')}
+                <View style={styles.commodityPicView}>
+                    <Image source={require('../assets/images/commodity.png')}
                        resizeMode="contain"
                        fadeDuration={0}
                        style={styles.commodityPic}/>
+                </View>
                 <View style={styles.commodityInfoView}>
                     <Text style={styles.commodityTitle}>
                          {rowData.title}
@@ -118,13 +120,18 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap',
         flexDirection: 'row'
     },
-    commodityPic:{
+    commodityPicView:{
         width:140,
         height: 140,
         marginTop: 5,
         marginLeft: 5,
         borderWidth: 1,
-        borderColor: '#ededed'
+        borderColor: '#ededed',
+    },
+    commodityPic:{
+       width: 130,
+        height: 140,
+        marginLeft: 5,
     },
     commodityInfoView:{
         flexDirection: 'column'

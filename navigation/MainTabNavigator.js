@@ -28,19 +28,31 @@ export default TabNavigator(
         navigationOptions: ({navigation}) => ({
             tabBarIcon: ({focused}) => {
                 const {routeName} = navigation.state;
-                let iconName;
+                let iconDefault, iconActive;
                 switch (routeName) {
-                    case 'Home': iconName = require('../assets/images/home.png');break;
-                    case 'search':iconName = require('../assets/images/search.png');break;
-                    case 'Trolley':iconName = require('../assets/images/trolley.png');break;
-                    case 'User':iconName = require('../assets/images/user.png');break;
+                    case 'Home':
+                        iconDefault = require('../assets/images/home.png');
+                        iconActive = require('../assets/images/home-active.png');
+                        break;
+                    case 'search':
+                        iconDefault = require('../assets/images/search.png');
+                        iconActive = require('../assets/images/search-active.png');
+                        break;
+                    case 'Trolley':
+                        iconDefault = require('../assets/images/trolley.png');
+                        iconActive = require('../assets/images/trolley-active.png');
+                        break;
+                    case 'User':
+                        iconDefault = require('../assets/images/user.png');
+                        iconActive = require('../assets/images/user-active.png');
+                        break;
                 }
                 return (
                     <Image
-                        source={iconName}
+                        source={focused ? iconActive : iconDefault}
                         size={28}
                         style={{marginBottom: -3, width: 25, height: 25}}
-                        color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+                        color={focused ? '#1296db' : '#cdcdcd'}
                     />
                 );
             },
