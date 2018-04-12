@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.myproject.MainActivity;
+import com.myproject.modules.GPSModule;
 import com.myproject.utils.Config;
 import com.myproject.utils.NotificationUtils;
 
@@ -87,11 +88,11 @@ public class ReactFireBaseMessagingService extends FirebaseMessagingService {
             try {
                 JSONObject data = new JSONObject(formData);
                 String title = data.getString("title");
-//                String address = data.getString("address");
+                String address = data.getString("address");
 
                 pushNotification.putExtra("title", title);
                 pushNotification.putExtra("message", message);
-//                pushNotification.putExtra("address", address);
+                pushNotification.putExtra("address", address);
 
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 

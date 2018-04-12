@@ -2,31 +2,24 @@ import React from 'react';
 import {
     Image,
     Platform,
-    ScrollView,
+    Alert,
     ListView,
     StyleSheet,
     Text,
     Button,
-    TouchableOpacity,
+    TouchableNativeFeedback,
     StatusBar,
     View,
+    ToastAndroid,
+    NativeModules
 } from 'react-native';
-
+import LinearGradient from 'react-native-linear-gradient';
+import Geolocation from 'Geolocation';
 import {MonoText} from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = ({navigation, screenProps}) => ({
-        headerTitle: 'Home',
-        headerTitleStyle: {
-            color: '#ffffff'
-        },
-        headerStyle: {
-            height: 40,
-            padding: 10,
-            margin: 0,
-            color: '#fff',
-            backgroundColor: '#29c7ef' // 设置导航栏的背景颜色,headerTintColor设置无效
-        },
+        header: null
     });
 
     constructor(props) {
@@ -53,10 +46,44 @@ export default class HomeScreen extends React.Component {
         }
     }
 
+    /** 获取地理位置（经纬度） */
+    getPosition = (): string => {
+        /** 获取地理位置 */
+        Geolocation.getCurrentPosition(
+            location => {
+                //可以获取到的数据
+                var result = "速度：" + location.coords.speed +
+                    "\n经度：" + location.coords.longitude +
+                    "\n纬度：" + location.coords.latitude +
+                    "\n准确度：" + location.coords.accuracy +
+                    "\n行进方向：" + location.coords.heading +
+                    "\n海拔：" + location.coords.altitude +
+                    "\n海拔准确度：" + location.coords.altitudeAccuracy +
+                    "\n时间戳：" + location.timestamp;
+                Alert.alert(location.coords.longitude + "/" + location.coords.latitude);
+            },
+            error => {
+                Alert.alert("定位失败", "请打开GPS", [
+                    {text:'打开GPS',onPress:()=> NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "打开GPS")},
+                    {text:'取消',onPress:()=>ToastAndroid.show('已取消',ToastAndroid.SHORT)}
+                ])
+            }
+        );
+    };
+
         render() {
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor={'#29c7ef'} />
+                <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                <LinearGradient
+                    colors={['#4f8eff', '#37bafe']}
+                    style={styles.titleView}>
+                    <Text style={styles.titleText}>Home</Text>
+                    <TouchableNativeFeedback onPress={() => this.getPosition()}>
+                        <Text style={styles.cityName}>番禺</Text>
+                    </TouchableNativeFeedback>
+                    <Image source={require("../assets/images/map.png")} style={styles.btnSelect}></Image>
+                </LinearGradient>
                 <ListView
                     dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
                     renderRow={this.renderRow}
@@ -97,7 +124,34 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f0f0f0',
-        flexDirection: 'row',
+        flexDirection: 'column',
+    },
+    statusBarView:{
+      backgroundColor: '#4f8eff'
+    },
+    titleView:{
+        width: 360,
+        height: 40,
+        padding: 5,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row'
+    },
+    cityName:{
+        width: 30,
+        color: '#fff',
+        marginTop: 3,
+    },
+    titleText:{
+        width: 270,
+        color: '#fff',
+        fontSize: 20,
+        marginLeft: 15
+    },
+    btnSelect:{
+        marginBottom: -3,
+        width: 25,
+        height: 25,
     },
     contentContainer: {
         paddingTop: 30,

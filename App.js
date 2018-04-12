@@ -24,16 +24,21 @@ type Props = {};
 export default class App extends Component<Props> {
     state = {
         switchValue: true
-    }
-
+    };
 
     static navigationOptions = ({navigation, screenProps}) => ({
         constructor(props) {
-            ReactFCM.toggleNotification(true);
+
         }
     });
 
+    toggleSwitch = () => {
+        this.setState({ switchValue: false })
+        ReactFCM.toggleNotification(false)
+    };
+
     render() {
+        this.toggleSwitch;
         return (
             <RootNavigation/>
         );

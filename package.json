@@ -7,9 +7,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "geolocation": "^0.2.0",
+    "link": "^0.1.5",
     "react": "16.3.1",
     "react-native": "0.55.1",
     "react-native-camera": "^1.0.3",
+    "react-native-check-box": "^2.1.0",
+    "react-native-flexi-radio-button": "^0.2.2",
+    "react-native-linear-gradient": "^2.4.0",
     "react-native-tab-navigator": "^0.3.4",
     "react-navigation": "^1.5.11"
   },

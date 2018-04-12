@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.myproject.modules.GPSModule;
 import com.myproject.utils.Config;
 import com.myproject.utils.NotificationUtils;
 
@@ -63,46 +64,48 @@ public class MainActivity extends ReactActivity {
                     final String iconUrl = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=651475608,268057290&fm=27&gp=0.jpg";
                     String notifiMessage = intent.getStringExtra("message");
                     String notifiTitle = intent.getStringExtra("title");
-//                    String notifiAddress = intent.getStringExtra("address");
+                    String notifiAddress = intent.getStringExtra("address");
+                    String cityName = GPSModule.getCNBylocation(context);
+                    if(notifiAddress.equals(cityName)) {
+                        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        PendingIntent intentPend = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        final NotificationCompat.Builder compat = new NotificationCompat.Builder(context);
+                        compat.setContentTitle(notifiTitle)
+                                .setContentText(notifiMessage + "/地址:" + notifiAddress)
+                                .setWhen(System.currentTimeMillis())
+                                .setContentIntent(intentPend)
+                                .setSmallIcon(R.mipmap.sendroid);
 
-                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    PendingIntent intentPend = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                    final NotificationCompat.Builder compat = new NotificationCompat.Builder(context);
-                    compat.setContentTitle(notifiTitle)
-                    .setContentText(notifiMessage)
-                    .setWhen(System.currentTimeMillis())
-                    .setContentIntent(intentPend)
-                    .setSmallIcon(R.mipmap.sendroid);
+                        //android 4.0之后不允许在主线程HttpURLConnection,
+                        // 需要子线程执行HttpURLConnection，等待子线程结束，再启动主线程
+                        Vector<Thread> threadVector = new Vector<>();
+                        Thread iconThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // 在线图片转Bitmap
+                                urlToBitmap(iconUrl);
+                            }
+                        });
+                        threadVector.add(iconThread);
+                        iconThread.start();
+                        for (Thread thread : threadVector) {
+                            try {
+                                thread.join();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        compat.setLargeIcon(bitmap)
+                                .setOnlyAlertOnce(true)
+                                .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fcmsound))
+                                .setAutoCancel(true)
+                                .setPriority(NotificationCompat.PRIORITY_MAX);
 
-                    //android 4.0之后不允许在主线程HttpURLConnection,
-                    // 需要子线程执行HttpURLConnection，等待子线程结束，再启动主线程
-                    Vector<Thread> threadVector = new Vector<>();
-                    Thread iconThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 在线图片转Bitmap
-                            urlToBitmap(iconUrl);
-                        }
-                    });
-                    threadVector.add(iconThread);
-                    iconThread.start();
-                    for (Thread thread : threadVector) {
-                        try {
-                            thread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        Notification notification = compat.build();
+                        notification.contentView.setImageViewBitmap(10, bitmap);
+                        manager.notify(notifiIndex++, notification);
+                        bitmap = null;
                     }
-                    compat.setLargeIcon(bitmap)
-                    .setOnlyAlertOnce(true)
-                    .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fcmsound))
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_MAX);
-
-                    Notification notification = compat.build();
-                    notification.contentView.setImageViewBitmap(10, bitmap);
-                    manager.notify(notifiIndex++, notification);
-                    bitmap = null;
                 }
             }
         };

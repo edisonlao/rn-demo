@@ -1,26 +1,21 @@
 import React from 'react';
 import {StyleSheet, Button, Text, View, Alert, StatusBar} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default class UserScreen extends React.Component {
     static navigationOptions = ({ navigation, screenProps}) =>({
-        headerTitle: 'Trolley',
-        headerTitleStyle: {
-            color: '#ffffff',
-        },
-        headerStyle: {
-            height: 40,
-            padding: 10,
-            backgroundColor: '#29c7ef' // 设置导航栏的背景颜色,headerTintColor设置无效
-        },
-        titleStyle: {
-            color: 'green'
-        }
+        header: null
     });
 
     render() {
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor={'#29c7ef'} />
+                <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                <LinearGradient
+                    colors={['#4f8eff', '#37bafe']}
+                    style={styles.titleView}>
+                    <Text style={styles.titleText}>Trolley</Text>
+                </LinearGradient>
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <Button title="打开摄像头"  onPress={() => this.openCamera()}></Button>
                 </View>
@@ -37,6 +32,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    titleView:{
+        width: 360,
+        height: 40,
+        padding: 5,
+        margin: 0,
+        color: '#ffffff',
+        backgroundColor: '#29c7ef',
+    },
+    titleText:{
+        color: '#fff',
+        fontSize: 20,
+        marginLeft: 15
     },
     bottomTab: {
         color: '#29c7ef',
