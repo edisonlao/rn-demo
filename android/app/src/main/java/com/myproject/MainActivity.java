@@ -24,11 +24,15 @@ import com.myproject.modules.GPSModule;
 import com.myproject.utils.Config;
 import com.myproject.utils.NotificationUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
+
+import static com.myproject.utils.PrintUtil.printMsg;
 
 public class MainActivity extends ReactActivity {
 
@@ -60,18 +64,23 @@ public class MainActivity extends ReactActivity {
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
-
+                    Config config = new Config();
                     final String iconUrl = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=651475608,268057290&fm=27&gp=0.jpg";
                     String notifiMessage = intent.getStringExtra("message");
                     String notifiTitle = intent.getStringExtra("title");
                     String notifiAddress = intent.getStringExtra("address");
-                    String cityName = GPSModule.getCNBylocation(context);
-                    if(notifiAddress.equals(cityName)) {
+                    String cityName = getLocation();
+                    if(cityName == null) {
+                        cityName = GPSModule.getCNBylocation(context);
+                    }
+
+                    Toast.makeText(getApplicationContext(), "location: " + config.getSETTING_LOCATION(), Toast.LENGTH_SHORT).show();
+                    if(notifiAddress.equals(cityName) || cityName == null) {
                         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                         PendingIntent intentPend = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                         final NotificationCompat.Builder compat = new NotificationCompat.Builder(context);
                         compat.setContentTitle(notifiTitle)
-                                .setContentText(notifiMessage + "/地址:" + notifiAddress)
+                                .setContentText(notifiMessage + "/地址:" + cityName)
                                 .setWhen(System.currentTimeMillis())
                                 .setContentIntent(intentPend)
                                 .setSmallIcon(R.mipmap.sendroid);
@@ -152,6 +161,28 @@ public class MainActivity extends ReactActivity {
             }
         }
         return bitmap;
+    }
+
+    private String getLocation(){
+        printMsg("开始读取...");
+        String location = null;
+        try {
+            File file = new File(this.getFilesDir(), "location.txt");
+            FileInputStream fileInputStream = new FileInputStream(file);
+            int length = fileInputStream.available();
+            byte[] buffer = new byte[length];
+            StringBuilder sb = new StringBuilder("");
+            int len = 0;
+            while ((len = fileInputStream.read(buffer)) > 0){
+                sb.append(new String(buffer, 0, len));
+            }
+            fileInputStream.close();
+            location = sb.toString();
+        }catch (Exception e){
+            location = null;
+        }
+        printMsg("读取成功..." + location);
+        return location;
     }
 
     @Override

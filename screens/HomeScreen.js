@@ -1,21 +1,21 @@
 import React from 'react';
 import {
     Image,
-    Platform,
     Alert,
     ListView,
     StyleSheet,
     Text,
     Button,
+    TouchableOpacity,
     TouchableNativeFeedback,
     StatusBar,
     View,
     ToastAndroid,
-    NativeModules
+    NativeModules,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Geolocation from 'Geolocation';
-import {MonoText} from '../components/StyledText';
+import emitter from "../navigation/ev";
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = ({navigation, screenProps}) => ({
@@ -25,7 +25,9 @@ export default class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
         this.state = {
+            cityName: '定位',
             dataSource: ds,
             data: [
                 {"title" : "goods1", "price" : "100", "address" : "address1"},
@@ -46,8 +48,21 @@ export default class HomeScreen extends React.Component {
         }
     }
 
+    componentDidMount(){
+        this.eventEmitter = emitter.addListener("callMe",(msg)=>{
+            this.setState({
+                cityName: msg
+            })
+        });
+    }
+    // 组件销毁前移除事件监听
+    componentWillUnmount(){
+        emitter.removeListener(this.eventEmitter);
+    }
+
     /** 获取地理位置（经纬度） */
     getPosition = (): string => {
+        this.setState({cityName: '定位中..'});
         /** 获取地理位置 */
         Geolocation.getCurrentPosition(
             location => {
@@ -60,11 +75,36 @@ export default class HomeScreen extends React.Component {
                     "\n海拔：" + location.coords.altitude +
                     "\n海拔准确度：" + location.coords.altitudeAccuracy +
                     "\n时间戳：" + location.timestamp;
-                Alert.alert(location.coords.longitude + "/" + location.coords.latitude);
+                let locationUrl = 'http://restapi.amap.com/v3/geocode/regeo?';
+                locationUrl += "location="
+                locationUrl += location.coords.longitude;
+                locationUrl += ",";
+                locationUrl += location.coords.latitude;
+                locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
+                const init = {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+
+                };
+                fetch(locationUrl, init)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        this.setState({cityName: responseJson.regeocode.addressComponent.city});
+                        emitter.emit("cityName", this.state.cityName);
+                        emitter.emit("cityIndex", 0);
+                        NativeModules
+                            .NewGPSModule
+                            .startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", this.state.cityName);
+                    })
+                    .catch(e => {Alert.alert('error',`${e}`)});
+
             },
             error => {
                 Alert.alert("定位失败", "请打开GPS", [
-                    {text:'打开GPS',onPress:()=> NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "打开GPS")},
+                    {text:'打开GPS',onPress:()=> NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "setting", "打开GPS")},
                     {text:'取消',onPress:()=>ToastAndroid.show('已取消',ToastAndroid.SHORT)}
                 ])
             }
@@ -80,7 +120,7 @@ export default class HomeScreen extends React.Component {
                     style={styles.titleView}>
                     <Text style={styles.titleText}>Home</Text>
                     <TouchableNativeFeedback onPress={() => this.getPosition()}>
-                        <Text style={styles.cityName}>番禺</Text>
+                        <Text style={styles.cityName}>{this.state.cityName}</Text>
                     </TouchableNativeFeedback>
                     <Image source={require("../assets/images/map.png")} style={styles.btnSelect}></Image>
                 </LinearGradient>
@@ -105,10 +145,21 @@ export default class HomeScreen extends React.Component {
                     <Text style={styles.commodityTitle}>
                          {rowData.title}
                     </Text>
-                    <Text style={styles.commodityPrice}>
-                        { "$" + rowData.price}
-                    </Text>
-                    <Button style={styles.btnBuy} title="Buy"></Button>
+                    <View style={styles.buyView}>
+                        <Text style={styles.commodityPrice}>
+                            { "$" + rowData.price}
+                        </Text>
+                        <TouchableOpacity>
+                            <View style={styles.btnBuy}>
+                                <LinearGradient
+                                    start={{x: 0.0, y: 0}} end={{x: 1, y: 1.0}}
+                                    style={styles.btnBuyLinear}
+                                    colors={['#f6af04', '#f68104']}>
+                                    <Text style={styles.textBuy}>Buy</Text>
+                                </LinearGradient>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <Text style={styles.commodityAddress}>
                         {rowData.address}
                     </Text>
@@ -135,15 +186,15 @@ const styles = StyleSheet.create({
         padding: 5,
         margin: 0,
         color: '#ffffff',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     cityName:{
-        width: 30,
+        width: 50,
         color: '#fff',
         marginTop: 3,
     },
     titleText:{
-        width: 270,
+        width: 250,
         color: '#fff',
         fontSize: 20,
         marginLeft: 15
@@ -172,7 +223,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         alignItems: 'flex-start',
         flexWrap: 'nowrap',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     commodityPicView:{
         width:140,
@@ -198,7 +249,7 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     commodityPrice:{
-        width: 100,
+        width: 70,
         height: 30,
         color: '#ff9000',
         marginTop: 35,
@@ -213,8 +264,24 @@ const styles = StyleSheet.create({
         color: '#b8b8b8'
     },
     btnBuy:{
-        width: 30,
+        width: 80,
+        height: 30,
+        marginTop: 35,
         marginLeft: 30,
-        backgroundColor: '#f68104'
+    },
+    btnBuyLinear:{
+        height: 30,
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+        borderBottomLeftRadius: 3,
+        borderBottomRightRadius: 3,
+    },
+    textBuy:{
+        marginTop: 4,
+        color: '#fff',
+        textAlign: 'center'
+    },
+    buyView:{
+        flexDirection: 'row'
     }
 });

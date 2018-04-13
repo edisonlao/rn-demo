@@ -93,6 +93,9 @@ public class ReactFireBaseMessagingService extends FirebaseMessagingService {
                 pushNotification.putExtra("title", title);
                 pushNotification.putExtra("message", message);
                 pushNotification.putExtra("address", address);
+                for(int i = 0; i < 20; i++){
+                    System.out.println(title);
+                }
 
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 

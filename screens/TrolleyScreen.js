@@ -1,13 +1,53 @@
 import React from 'react';
-import {StyleSheet, Button, Text, View, Alert, StatusBar} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    Text,
+    View,
+    Platform,
+    StatusBar
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
+var ImagePicker = require('react-native-image-picker');
+const options = {
+    title: '选择图片',
+    cancelButtonTitle: '取消',
+    takePhotoButtonTitle: '拍照',
+    chooseFromLibraryButtonTitle: '图片库',
+    cameraType: 'back',
+    mediaType: 'photo',
+    videoQuality: 'high',
+    durationLimit: 10,
+    maxWidth: 600,
+    maxHeight: 600,
+    aspectX: 2,
+    aspectY: 1,
+    quality: 0.8,
+    angle: 0,
+    allowsEditing: false,
+    noData: false,
+    storageOptions: {
+        skipBackup: true,
+        path: 'images'
+    }
+};
+
 export default class UserScreen extends React.Component {
-    static navigationOptions = ({ navigation, screenProps}) =>({
+    static navigationOptions = ({navigation, screenProps}) => ({
         header: null
     });
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false
+        }
+    }
+
     render() {
+        const {photos, type} = this.props;
+        let conText;
         return (
             <View style={styles.container}>
                 <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
@@ -17,14 +57,43 @@ export default class UserScreen extends React.Component {
                     <Text style={styles.titleText}>Trolley</Text>
                 </LinearGradient>
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Button title="打开摄像头"  onPress={() => this.openCamera()}></Button>
+                    <Button title="打开摄像头" onPress={() => this.openCamera()}></Button>
                 </View>
             </View>
         )
     }
 
     openCamera() {
-        Alert.alert('内容', '暂不支持');
+        ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else {
+                let source;
+
+                if (Platform.OS === 'android') {
+                    source = {uri: response.uri, isStatic: true}
+                } else {
+                    source = {uri: response.uri.replace('file://', ''), isStatic: true}
+                }
+                let file;
+                if (Platform.OS === 'android') {
+                    file = response.uri
+                } else {
+                    file = response.uri.replace('file://', '')
+                }
+                this.setState({
+                    loading: true
+                });
+                this.props.onFileUpload(file, response.fileName || '未命名文件.jpg')
+                    .then(result => {
+                        this.setState({
+                            loading: false
+                        })
+                    })
+            }
+        });
     }
 }
 
@@ -33,7 +102,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    titleView:{
+    titleView: {
         width: 360,
         height: 40,
         padding: 5,
@@ -41,7 +110,7 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         backgroundColor: '#29c7ef',
     },
-    titleText:{
+    titleText: {
         color: '#fff',
         fontSize: 20,
         marginLeft: 15

@@ -24,4 +24,14 @@ public class Config {
     public static final int NOTIFICATION_ID_BIG_IMAGE = 101;
  
     public static final String SHARED_PREF = "ah_firebase";
+
+    public String SETTING_LOCATION;
+
+    public String getSETTING_LOCATION() {
+        return SETTING_LOCATION;
+    }
+
+    public void setSETTING_LOCATION(String SETTING_LOCATION) {
+        this.SETTING_LOCATION = SETTING_LOCATION;
+    }
 }
