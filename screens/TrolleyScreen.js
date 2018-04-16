@@ -6,9 +6,10 @@ import {
     View,
     Platform,
     StatusBar,
-    PixelRatio
+    PixelRatio, Dimensions
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {isIphoneX} from "react-native-iphone-x-helper";
 
 var ImagePicker = require('react-native-image-picker');
 const options = {
@@ -49,19 +50,35 @@ export default class UserScreen extends React.Component {
     render() {
         const {photos, type} = this.props;
         let conText;
-        return (
-            <View style={styles.container}>
-                <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
-                <LinearGradient
-                    colors={['#4f8eff', '#37bafe']}
-                    style={styles.titleView}>
-                    <Text style={styles.titleText}>Trolley</Text>
-                </LinearGradient>
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Button title="打开摄像头" onPress={() => this.openCamera()}></Button>
+        if(Platform.OS === 'android') {
+            return (
+                <View style={styles.container}>
+                    <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                    <LinearGradient
+                        colors={['#4f8eff', '#37bafe']}
+                        style={styles.titleView}>
+                        <Text style={styles.titleText}>Trolley</Text>
+                    </LinearGradient>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Button title="打开摄像头" onPress={() => this.openCamera()}></Button>
+                    </View>
                 </View>
-            </View>
-        )
+            )
+        }else {
+            return (
+                <View style={styles.container}>
+                    <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                    <LinearGradient
+                        colors={['#4f8eff', '#37bafe']}
+                        style={isIphoneX() ? styles.titleViewIphoneX : styles.titleViewIOS}>
+                        <Text style={styles.titleText}>Trolley</Text>
+                    </LinearGradient>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Button title="打开摄像头" onPress={() => this.openCamera()}></Button>
+                    </View>
+                </View>
+            )
+        }
     }
 
     openCamera() {
@@ -103,13 +120,31 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    titleView: {
-        width: 360 * PixelRatio.get(),
+    titleView:{
+        width: 1 * Dimensions.get('window').width,
         height: 40,
         padding: 5,
         margin: 0,
         color: '#ffffff',
         backgroundColor: '#29c7ef',
+    },
+    titleViewIOS:{
+        width: 1 * Dimensions.get('window').width,
+        height: 55,
+        padding: 5,
+        paddingTop: 20,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row',
+    },
+    titleViewIphoneX: {
+        width: 1 * Dimensions.get('window').width,
+        height: 65,
+        padding: 5,
+        paddingTop: 30,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row',
     },
     titleText: {
         color: '#fff',

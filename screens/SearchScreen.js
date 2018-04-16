@@ -7,12 +7,15 @@ import {
     Text,
     Image,
     Alert,
+    StatusBar,
+    Platform,
     TouchableOpacity,
     TouchableNativeFeedback,
-    NativeModules, PixelRatio,
+    NativeModules, PixelRatio, Dimensions,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import emitter from "../navigation/ev"
+import {isIphoneX} from "react-native-iphone-x-helper";
 
 export default class SearchScreen extends React.Component {
 
@@ -66,49 +69,88 @@ export default class SearchScreen extends React.Component {
             activeRadioNum:parseInt(index),
             activeRadioName:cityName
         });
-        NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", cityName)
+        if(Platform.OS === 'android') {
+            NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", cityName)
+        }
         emitter.emit("callMe", cityName);
     };
 
     render() {
-        return (
-            <View style={styles.container}>
-                <LinearGradient
-                    colors={['#4f8eff', '#37bafe']}
-                    style={styles.titleView}>
-                    <Text style={styles.titleText}>Search</Text>
-                </LinearGradient>
-                <View>
-                    <Text>当前城市: {this.state.activeRadioName}</Text>
+        if(Platform.OS === 'android') {
+            return (
+                <View style={styles.container}>
+                    <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                    <LinearGradient
+                        colors={['#4f8eff', '#37bafe']}
+                        style={styles.titleView}>
+                        <Text style={styles.titleText}>Search</Text>
+                    </LinearGradient>
+                    <View>
+                        <Text>当前城市: {this.state.activeRadioName}</Text>
+                    </View>
+                    <ListView dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
+                              renderRow={this.renderRow.bind(this)}>
+                    </ListView>
                 </View>
-                <ListView dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
-                          renderRow={this.renderRow.bind(this)}>
+            );
+        }else {
+            return (
+                <View style={styles.container}>
+                    <LinearGradient
+                        colors={['#4f8eff', '#37bafe']}
+                        style={isIphoneX() ? styles.titleViewIphoneX : styles.titleViewIOS}>
+                        <Text style={styles.titleText}>Search</Text>
+                    </LinearGradient>
+                    <View>
+                        <Text>当前城市: {this.state.activeRadioName}</Text>
+                    </View>
+                    <ListView dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
+                              renderRow={this.renderRow.bind(this)}>
 
-                </ListView>
+                    </ListView>
 
-            </View>
-        );
+                </View>
+            );
+        }
     }
 
     renderRow(rowData){
         let iconDefault, iconActive;
         iconDefault = require("../assets/images/radioDefault.png");
         iconActive = require("../assets/images/radioActive.png");
-        return(
-            <TouchableNativeFeedback
-                activeOpacity = {0.6}
-                onPress={() => this.radioActive(rowData.index, rowData.city)}>
-            <View style={styles.cityViewItem}>
-                <Image style={styles.btnMap} source={require("../assets/images/mapDefault.png")}/>
-                <Text style={styles.cityText}>{rowData.city}</Text>
-                <TouchableOpacity onPress={() => this.radioActive(rowData.index, rowData.city)}>
-                    <Image style={styles.btnRadio} source={
-                        this.state.activeRadioNum === rowData.index ||
-                        this.state.activeRadioName === rowData.city ? iconActive:iconDefault}/>
+        if(Platform.OS === 'android') {
+            return (
+                <TouchableNativeFeedback
+                    activeOpacity={0.6}
+                    onPress={() => this.radioActive(rowData.index, rowData.city)}>
+                    <View style={styles.cityViewItem}>
+                        <Image style={styles.btnMap} source={require("../assets/images/mapDefault.png")}/>
+                        <Text style={styles.cityText}>{rowData.city}</Text>
+                        <TouchableOpacity onPress={() => this.radioActive(rowData.index, rowData.city)}>
+                            <Image style={styles.btnRadio} source={
+                                this.state.activeRadioNum === rowData.index ||
+                                this.state.activeRadioName === rowData.city ? iconActive : iconDefault}/>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableNativeFeedback>
+            );
+        }else {
+            return (
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => this.radioActive(rowData.index, rowData.city)}>
+                    <View style={styles.cityViewItem}>
+                        <Image style={styles.btnMap} source={require("../assets/images/mapDefault.png")}/>
+                        <Text style={styles.cityText}>{rowData.city}</Text>
+                        <TouchableOpacity onPress={() => this.radioActive(rowData.index, rowData.city)}>
+                            <Image style={styles.btnRadio} source={
+                                this.state.activeRadioNum === rowData.index ||
+                                this.state.activeRadioName === rowData.city ? iconActive : iconDefault}/>
+                        </TouchableOpacity>
+                    </View>
                 </TouchableOpacity>
-            </View>
-            </TouchableNativeFeedback>
-        );
+            );
+        }
     }
 
 }
@@ -118,13 +160,34 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f0f0f0',
     },
+    statusBarView:{
+        backgroundColor: '#4f8eff'
+    },
     titleView:{
-        width: 360 * PixelRatio.get(),
+        width: 1 * Dimensions.get('window').width,
         height: 40,
         padding: 5,
         margin: 0,
         color: '#ffffff',
         backgroundColor: '#29c7ef',
+    },
+    titleViewIOS:{
+        width: 1 * Dimensions.get('window').width,
+        height: 55,
+        padding: 5,
+        paddingTop: 20,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row',
+    },
+    titleViewIphoneX: {
+        width: 1 * Dimensions.get('window').width,
+        height: 65,
+        padding: 5,
+        paddingTop: 30,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row',
     },
     titleText:{
         color: '#fff',
@@ -132,11 +195,12 @@ const styles = StyleSheet.create({
         marginLeft: 15
     },
     cityViewItem:{
-        width: 350,
+        flex: 1,
         height: 50,
         backgroundColor: '#fff',
-        marginTop: 5,
-        marginLeft: 5,
+        marginTop: 0.015 * Dimensions.get('window').width,
+        marginLeft: 0.015 * Dimensions.get('window').width,
+        marginRight: 0.015 * Dimensions.get('window').width,
         padding: 0,
         textAlign: 'center',
         flexDirection: 'row',
@@ -146,15 +210,15 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 4,
     },
     cityText:{
-        width: 270,
-        marginTop: 15,
-        marginLeft: 10,
+        width: 0.75 * Dimensions.get('window').width,
+        marginTop: 18,
+        marginLeft: 0.02 * Dimensions.get('window').width,
         color: '#bebfc0'
     },
     btnMap:{
         marginTop: 15,
-        marginLeft: 10,
-        width: 20,
+        marginLeft: 0.03 * Dimensions.get('window').width,
+        width: 0.05 * Dimensions.get('window').width,
         height: 20,
     },
     btnRadio:{

@@ -10,6 +10,7 @@ import {
     Platform,
     TouchableOpacity,
     TouchableNativeFeedback,
+    AlertIOS,
     StatusBar,
     View,
     ToastAndroid,
@@ -30,7 +31,7 @@ export default class HomeScreen extends React.Component {
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
         this.state = {
-            cityName: '定位',
+            cityName: 'position',
             dataSource: ds,
             data: [
                 {"title" : "goods1", "price" : "100", "address" : "address1"},
@@ -83,7 +84,11 @@ export default class HomeScreen extends React.Component {
                 locationUrl += location.coords.longitude;
                 locationUrl += ",";
                 locationUrl += location.coords.latitude;
-                locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
+                if(Platform.OS === "ios"){
+                    locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
+                }else if(Platform.OS === "android") {
+                    locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
+                }
                 const init = {
                     method: 'GET',
                     headers: {
@@ -98,18 +103,33 @@ export default class HomeScreen extends React.Component {
                         this.setState({cityName: responseJson.regeocode.addressComponent.city});
                         emitter.emit("cityName", this.state.cityName);
                         emitter.emit("cityIndex", 0);
-                        NativeModules
-                            .NewGPSModule
-                            .startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", this.state.cityName);
+                        if(Platform.OS === "android") {
+                            NativeModules
+                                .NewGPSModule
+                                .startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", this.state.cityName);
+                        }
                     })
                     .catch(e => {Alert.alert('error',`${e}`)});
 
             },
             error => {
-                Alert.alert("定位失败", "请打开GPS", [
-                    {text:'打开GPS',onPress:()=> NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "setting", "打开GPS")},
-                    {text:'取消',onPress:()=>ToastAndroid.show('已取消',ToastAndroid.SHORT)}
-                ])
+                if(Platform.OS === "android") {
+                    Alert.alert("定位失败", "请打开GPS", [
+                        {
+                            text: '打开GPS',
+                            onPress: () => NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "setting", "打开GPS")
+                        },
+                        {text: '取消', onPress: () => ToastAndroid.show('已取消', ToastAndroid.SHORT)}
+                    ])
+                }else if(Platform.OS === "ios"){
+                    AlertIOS.alert("定位失败", "请打开GPS", [
+                        {
+                            text: '打开GPS',
+                            onPress: () => AlertIOS.alert("TODO", "IOS连接")
+                        },
+                        {text: '取消', onPress: () => ToastAndroid.show('已取消', ToastAndroid.SHORT)}
+                        ])
+                }
             }
         );
     };
@@ -141,9 +161,11 @@ export default class HomeScreen extends React.Component {
                         <LinearGradient
                             colors={['#4f8eff', '#37bafe']}
                             style={isIphoneX() ? styles.titleViewIphoneX : styles.titleViewIOS}>
-                            <Text style={styles.titleText}>Home</Text>
+                            <Text style={styles.titleText}>MainPage</Text>
                             <View onPress={() => this.getPosition()}>
-                                <Text style={styles.cityName}>{this.state.cityName}</Text>
+                                <TouchableOpacity onPress={() => this.getPosition()}>
+                                    <Text style={styles.cityName}>{this.state.cityName}</Text>
+                                </TouchableOpacity>
                             </View>
                             <Image source={require("../assets/images/map.png")} style={styles.btnSelect}></Image>
                         </LinearGradient>
@@ -152,8 +174,9 @@ export default class HomeScreen extends React.Component {
                             renderRow={this.renderRow}
                         />
                     </View>
-                );
+                )
             }
+
         }
 
 
@@ -230,16 +253,17 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         flexDirection: 'row',
     },
-    cityName:{
-        width: 0.1 * Dimensions.get('window').width,
-        color: '#fff',
-        marginTop: 3,
-    },
     titleText:{
-        width: 0.75 * Dimensions.get('window').width,
+        width: 0.7 * Dimensions.get('window').width,
         color: '#fff',
         fontSize: 20,
-        marginLeft: 15
+        marginLeft: 15,
+        marginTop: 2,
+    },
+    cityName:{
+        width: 0.15 * Dimensions.get('window').width,
+        color: '#fff',
+        marginTop: 3 * PixelRatio.get(),
     },
     btnSelect:{
         marginBottom: -3,
@@ -250,7 +274,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
     },
     commodityView:{
-        width: 350,
+        flex: 1,
         marginTop: 10,
         flexWrap: 'nowrap',
         justifyContent: 'center',
@@ -258,10 +282,10 @@ const styles = StyleSheet.create({
     },
     commodityViewItem:{
         flex: 1,
-        height: 150,
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10,
+        height: 0.32 * Dimensions.get('window').width,
+        marginTop: 0.015 * Dimensions.get('window').width,
+        marginLeft: 0.015 * Dimensions.get('window').width,
+        marginRight: 0.015 * Dimensions.get('window').width,
         backgroundColor: '#ffffff',
         alignSelf: 'stretch',
         alignItems: 'flex-start',
@@ -269,58 +293,58 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     commodityPicView:{
-        width:140,
-        height: 140,
-        marginTop: 5,
-        marginLeft: 5,
+        width: 0.3 * Dimensions.get('window').width,
+        height: 0.3 * Dimensions.get('window').width,
+        marginTop: 0.01 * Dimensions.get('window').width,
+        marginLeft: 0.01* Dimensions.get('window').width,
         borderWidth: 1,
         borderColor: '#ededed',
     },
     commodityPic:{
-       width: 130,
-        height: 140,
-        marginLeft: 5,
+        width: 0.28 * Dimensions.get('window').width,
+        height: 0.29 * Dimensions.get('window').width,
+        marginLeft: 0.005 * Dimensions.get('window').width,
     },
     commodityInfoView:{
         flexDirection: 'column'
     },
     commodityTitle:{
-        width: 180,
-        height: 40,
-        marginTop: 5,
-        marginLeft: 10,
+        width: 0.64 * Dimensions.get('window').width,
+        height: 0.06 * Dimensions.get('window').width,
+        marginTop: 0.01 * Dimensions.get('window').width,
+        marginLeft: 0.05 * Dimensions.get('window').width,
         fontSize: 20
     },
     commodityPrice:{
-        width: 70,
-        height: 30,
+        width: 0.3 * Dimensions.get('window').width,
+        height: 0.08 * Dimensions.get('window').width,
         color: '#ff9000',
-        marginTop: 35,
-        marginLeft: 10,
+        marginTop: 0.1 * Dimensions.get('window').width,
+        marginLeft: 0.05 * Dimensions.get('window').width,
         fontSize: 18
     },
     commodityAddress:{
-        width: 180,
+        width: 0.64 * Dimensions.get('window').width,
         height: 30,
         fontSize: 15,
         marginLeft: 10,
         color: '#b8b8b8'
     },
     btnBuy:{
-        width: 80,
-        height: 30,
-        marginTop: 35,
-        marginLeft: 30,
+        width: 0.26 * Dimensions.get('window').width,
+        height: 0.08 * Dimensions.get('window').width,
+        marginTop: 0.09 * Dimensions.get('window').width,
+        marginLeft: 0.01 * Dimensions.get('window').width,
     },
     btnBuyLinear:{
-        height: 30,
+        height: 0.08 * Dimensions.get('window').width,
         borderTopLeftRadius: 3,
         borderTopRightRadius: 3,
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3,
     },
     textBuy:{
-        marginTop: 4,
+        marginTop: 0.02 * Dimensions.get('window').width,
         color: '#fff',
         textAlign: 'center'
     },

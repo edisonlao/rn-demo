@@ -11,7 +11,7 @@ import UserScreen from '../screens/UserScreen';
 
 export default TabNavigator(
     {
-        Home: {
+        Main: {
             screen: HomeScreen,
         },
         search: {
@@ -30,7 +30,7 @@ export default TabNavigator(
                 const {routeName} = navigation.state;
                 let iconDefault, iconActive;
                 switch (routeName) {
-                    case 'Home':
+                    case 'Main':
                             iconDefault = require('../assets/images/home.png');
                             iconActive = require('../assets/images/home-active.png');
 
