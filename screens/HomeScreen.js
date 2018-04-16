@@ -6,6 +6,8 @@ import {
     StyleSheet,
     Text,
     Button,
+    Dimensions,
+    Platform,
     TouchableOpacity,
     TouchableNativeFeedback,
     StatusBar,
@@ -16,6 +18,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import Geolocation from 'Geolocation';
 import emitter from "../navigation/ev";
+import { isIphoneX } from 'react-native-iphone-x-helper';
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = ({navigation, screenProps}) => ({
@@ -112,42 +115,64 @@ export default class HomeScreen extends React.Component {
     };
 
         render() {
-        return (
-            <View style={styles.container}>
-                <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
-                <LinearGradient
-                    colors={['#4f8eff', '#37bafe']}
-                    style={styles.titleView}>
-                    <Text style={styles.titleText}>Home</Text>
-                    <TouchableNativeFeedback onPress={() => this.getPosition()}>
-                        <Text style={styles.cityName}>{this.state.cityName}</Text>
-                    </TouchableNativeFeedback>
-                    <Image source={require("../assets/images/map.png")} style={styles.btnSelect}></Image>
-                </LinearGradient>
-                <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
-                    renderRow={this.renderRow}
-                />
-            </View>
-        );
-    }
+            if(Platform.OS === "android") {
+                return (
+                    <View style={styles.container}>
+                        <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                        <LinearGradient
+                            colors={['#4f8eff', '#37bafe']}
+                            style={styles.titleView}>
+                            <Text style={styles.titleText}>Home</Text>
+                            <TouchableNativeFeedback onPress={() => this.getPosition()}>
+                                <Text style={styles.cityName}>{this.state.cityName}</Text>
+                            </TouchableNativeFeedback>
+                            <Image source={require("../assets/images/map.png")} style={styles.btnSelect}></Image>
+                        </LinearGradient>
+                        <ListView
+                            dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
+                            renderRow={this.renderRow}
+                        />
+                    </View>
+                );
+            }else if(Platform.OS === "ios"){
+                return (
+                    <View style={styles.container}>
+                        <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
+                        <LinearGradient
+                            colors={['#4f8eff', '#37bafe']}
+                            style={isIphoneX() ? styles.titleViewIphoneX : styles.titleViewIOS}>
+                            <Text style={styles.titleText}>Home</Text>
+                            <View onPress={() => this.getPosition()}>
+                                <Text style={styles.cityName}>{this.state.cityName}</Text>
+                            </View>
+                            <Image source={require("../assets/images/map.png")} style={styles.btnSelect}></Image>
+                        </LinearGradient>
+                        <ListView
+                            dataSource={this.state.dataSource.cloneWithRows(this.state.data)}
+                            renderRow={this.renderRow}
+                        />
+                    </View>
+                );
+            }
+        }
 
-    renderRow(rowData){
-        return(
+
+    renderRow(rowData) {
+        return (
             <View style={styles.commodityViewItem}>
                 <View style={styles.commodityPicView}>
                     <Image source={require('../assets/images/commodity.png')}
-                       resizeMode="contain"
-                       fadeDuration={0}
-                       style={styles.commodityPic}/>
+                           resizeMode="contain"
+                           fadeDuration={0}
+                           style={styles.commodityPic}/>
                 </View>
                 <View style={styles.commodityInfoView}>
                     <Text style={styles.commodityTitle}>
-                         {rowData.title}
+                        {rowData.title}
                     </Text>
                     <View style={styles.buyView}>
                         <Text style={styles.commodityPrice}>
-                            { "$" + rowData.price}
+                            {"$" + rowData.price}
                         </Text>
                         <TouchableOpacity>
                             <View style={styles.btnBuy}>
@@ -167,7 +192,6 @@ export default class HomeScreen extends React.Component {
             </View>
         );
     }
-
 }
 
 
@@ -181,20 +205,38 @@ const styles = StyleSheet.create({
       backgroundColor: '#4f8eff'
     },
     titleView:{
-        width: 125 * PixelRatio.get(),
+        width: 1 * Dimensions.get('window').width,
         height: 40,
         padding: 5,
         margin: 0,
         color: '#ffffff',
         flexDirection: 'row',
     },
+    titleViewIOS:{
+        width: 1 * Dimensions.get('window').width,
+        height: 55,
+        padding: 5,
+        paddingTop: 20,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row',
+    },
+    titleViewIphoneX: {
+        width: 1 * Dimensions.get('window').width,
+        height: 65,
+        padding: 5,
+        paddingTop: 30,
+        margin: 0,
+        color: '#ffffff',
+        flexDirection: 'row',
+    },
     cityName:{
-        width: 50,
+        width: 0.1 * Dimensions.get('window').width,
         color: '#fff',
         marginTop: 3,
     },
     titleText:{
-        width: 250,
+        width: 0.75 * Dimensions.get('window').width,
         color: '#fff',
         fontSize: 20,
         marginLeft: 15
@@ -215,10 +257,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     commodityViewItem:{
-        width: 340,
+        flex: 1,
         height: 150,
         marginTop: 10,
-        marginLeft: 10 ,
+        marginLeft: 10,
+        marginRight: 10,
         backgroundColor: '#ffffff',
         alignSelf: 'stretch',
         alignItems: 'flex-start',

@@ -16,6 +16,7 @@
     "react-native-check-box": "^2.1.0",
     "react-native-flexi-radio-button": "^0.2.2",
     "react-native-image-picker": "^0.26.7",
+    "react-native-iphone-x-helper": "^1.0.2",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-storage": "^0.2.2",
     "react-native-tab-navigator": "^0.3.4",
