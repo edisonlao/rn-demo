@@ -155,7 +155,7 @@ export default class HomeScreen extends React.Component {
                                     start={{x: 0.0, y: 0}} end={{x: 1, y: 1.0}}
                                     style={styles.btnBuyLinear}
                                     colors={['#f6af04', '#f68104']}>
-                                    <Text style={styles.textBuy}>Buy</Text>
+                                    <Text style={styles.textBuy}>Buys</Text>
                                 </LinearGradient>
                             </View>
                         </TouchableOpacity>
