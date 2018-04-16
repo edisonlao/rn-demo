@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Platform, Switch } from 'react-native';
+import {View, Text, StyleSheet, StatusBar, Platform, Switch, PixelRatio} from 'react-native';
 import ReactFCM from '../src/module/ReactFCM';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -65,7 +65,7 @@ export default class UserScreen extends React.Component {
 
 const styles = StyleSheet.create({
     titleView:{
-        width: 360,
+        width: 360 * PixelRatio.get(),
         height: 40,
         padding: 5,
         margin: 0,

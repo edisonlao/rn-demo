@@ -5,7 +5,8 @@ import {
     Text,
     View,
     Platform,
-    StatusBar
+    StatusBar,
+    PixelRatio
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     titleView: {
-        width: 360,
+        width: 360 * PixelRatio.get(),
         height: 40,
         padding: 5,
         margin: 0,

@@ -11,7 +11,7 @@ import {
     StatusBar,
     View,
     ToastAndroid,
-    NativeModules,
+    NativeModules, PixelRatio,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Geolocation from 'Geolocation';
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#4f8eff'
     },
     titleView:{
-        width: 360,
+        width: 125 * PixelRatio.get(),
         height: 40,
         padding: 5,
         margin: 0,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         width: 340,
         height: 150,
         marginTop: 10,
-        marginLeft: 10,
+        marginLeft: 10 ,
         backgroundColor: '#ffffff',
         alignSelf: 'stretch',
         alignItems: 'flex-start',

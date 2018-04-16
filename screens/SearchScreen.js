@@ -7,9 +7,9 @@ import {
     Text,
     Image,
     Alert,
-    TouchableOpacity ,
+    TouchableOpacity,
     TouchableNativeFeedback,
-    NativeModules,
+    NativeModules, PixelRatio,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import emitter from "../navigation/ev"
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
     },
     titleView:{
-        width: 360,
+        width: 360 * PixelRatio.get(),
         height: 40,
         padding: 5,
         margin: 0,

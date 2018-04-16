@@ -31,8 +31,9 @@ export default TabNavigator(
                 let iconDefault, iconActive;
                 switch (routeName) {
                     case 'Home':
-                        iconDefault = require('../assets/images/home.png');
-                        iconActive = require('../assets/images/home-active.png');
+                            iconDefault = require('../assets/images/home.png');
+                            iconActive = require('../assets/images/home-active.png');
+
                         break;
                     case 'search':
                         iconDefault = require('../assets/images/search.png');
