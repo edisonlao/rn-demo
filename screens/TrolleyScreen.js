@@ -6,7 +6,8 @@ import {
     View,
     Platform,
     StatusBar,
-    PixelRatio, Dimensions
+    TouchableOpacity,
+    Dimensions
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {isIphoneX} from "react-native-iphone-x-helper";
@@ -74,7 +75,16 @@ export default class UserScreen extends React.Component {
                         <Text style={styles.titleText}>Trolley</Text>
                     </LinearGradient>
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <Button title="打开摄像头" onPress={() => this.openCamera()}></Button>
+                        <TouchableOpacity onPress={() => this.openCamera()}>
+                            <View style={styles.btnOpenCam}>
+                                <LinearGradient
+                                    start={{x: 0.0, y: 0}} end={{x: 1, y: 1.0}}
+                                    style={styles.btnOpenCamLinear}
+                                    colors={['#f6af04', '#f68104']}>
+                                    <Text style={styles.textOpenCam}>打开摄像头</Text>
+                                </LinearGradient>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
             )
@@ -171,5 +181,21 @@ const styles = StyleSheet.create({
     icon: {
         width: 20,
         height: 20
+    },
+    btnOpenCam: {
+        flex: 1
+    },
+    btnOpenCamLinear:{
+        width: 0.3 * Dimensions.get('window').width,
+        height: 20,
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+        borderBottomLeftRadius: 3,
+        borderBottomRightRadius: 3,
+        textAlign: 'center'
+    },
+    textOpenCam:{
+        textAlign: 'center',
+        color: '#fff'
     }
 });
