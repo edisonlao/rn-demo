@@ -71,6 +71,8 @@ export default class SearchScreen extends React.Component {
         });
         if(Platform.OS === 'android') {
             NativeModules.NewGPSModule.startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", cityName)
+        }else{
+            var RNFS = require('react-native-fs');
         }
         emitter.emit("callMe", cityName);
     };
