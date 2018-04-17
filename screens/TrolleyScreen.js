@@ -183,11 +183,12 @@ const styles = StyleSheet.create({
         height: 20
     },
     btnOpenCam: {
-        flex: 1
+        flex: 1,
+        marginTop: 20,
     },
     btnOpenCamLinear:{
         width: 0.3 * Dimensions.get('window').width,
-        height: 20,
+        height: 35,
         borderTopLeftRadius: 3,
         borderTopRightRadius: 3,
         borderBottomLeftRadius: 3,
@@ -195,6 +196,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     textOpenCam:{
+        marginTop: 10,
         textAlign: 'center',
         color: '#fff'
     }

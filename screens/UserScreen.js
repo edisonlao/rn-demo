@@ -15,7 +15,9 @@ export default class UserScreen extends React.Component {
 
     toggleSwitch = (value) => {
         this.setState({ switchValue: value })
-        ReactFCM.toggleNotification(value)
+        if(Platform.OS === 'android') {
+            ReactFCM.toggleNotification(value)
+        }
     };
 
     componentDidMount = () => {
@@ -74,19 +76,15 @@ export default class UserScreen extends React.Component {
                     </Text>
 
                     <View >
-
-                        {(Platform.OS === 'android') && <Text>
+                        <Text>
                             Toggle Push Notification!
                         </Text>
-                        }
+                        <Switch onValueChange = {this.toggleSwitch}
+                                value = {this.state.switchValue}/>
 
-                        {(Platform.OS === 'android') && <Switch onValueChange = {this.toggleSwitch}
-                                                                value = {this.state.switchValue}
-                        />
-                        }
-                        {(Platform.OS === 'android') && <Text>{this.state.switchValue ? 'Enabled' : 'Disabled'}
+                        <Text>
+                            {this.state.switchValue ? 'Enabled' : 'Disabled'}
                         </Text>
-                        }
 
                     </View>
 
@@ -134,6 +132,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     },
     welcome: {
+        width: 1 * Dimensions.get('window').width,
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
