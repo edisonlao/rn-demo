@@ -100,7 +100,13 @@ export default class HomeScreen extends React.Component {
                 fetch(locationUrl, init)
                     .then((response) => response.json())
                     .then((responseJson) => {
-                        this.setState({cityName: responseJson.regeocode.addressComponent.city});
+                        if(responseJson.regeocode.addressComponent.city.toString() === ""){
+                            this.setState({
+                                cityName: '番禺'
+                            })
+                        }else {
+                            this.setState({cityName: responseJson.regeocode.addressComponent.city});
+                        }
                         emitter.emit("cityName", this.state.cityName);
                         emitter.emit("cityIndex", 0);
                         if(Platform.OS === "android") {

@@ -37,11 +37,12 @@
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		363DF78C4D1E4BB2A4F0BEBC /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DE26A113E854D1AB1D6A80B /* libBVLinearGradient.a */; };
 		4CE1B90AE5A02AB218750076 /* libPods-MyProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DFC52AC8F927B8347087A20 /* libPods-MyProject.a */; };
-		4FEE0B25A1394834B32402FD /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
+		4FEE0B25A1394834B32402FD /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		629EF1BC3C4244B48481BEC8 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EE2F30288984BF483FDFDC1 /* libRNImagePicker.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		A2BDFB054B508BF43F0A541A /* libPods-MyProject-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E30276CEC585E25707BA7BF /* libPods-MyProject-tvOSTests.a */; };
 		A37F99D0207DD0BE003DB85C /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		A3F7A3FE2086F23E00561A88 /* NativeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F7A3FD2086F23E00561A88 /* NativeTest.m */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		CB1133AA2871FCBEFF95F3BE /* libPods-MyProject-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63EFA3C6E48F5DE7FE681DBC /* libPods-MyProject-tvOS.a */; };
 		F1D507B23849823F5940B12E /* libPods-MyProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D7167CCF559381C6137A4A8 /* libPods-MyProjectTests.a */; };
@@ -390,6 +391,8 @@
 		941C1CFB1E454804B8E51AB3 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		9DE26A113E854D1AB1D6A80B /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		A37E279C208600DE00E2313C /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
+		A3F7A3FB2086F1AD00561A88 /* NativeTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NativeTest.h; path = MyProject/NativeTest.h; sourceTree = "<group>"; };
+		A3F7A3FD2086F23E00561A88 /* NativeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NativeTest.m; path = MyProject/NativeTest.m; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		C6A70B79D073ECEECCC5E5D7 /* Pods-MyProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyProjectTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyProjectTests/Pods-MyProjectTests.release.xcconfig"; sourceTree = "<group>"; };
 		CAFC8217FD29F4426D12D7DC /* Pods-MyProject-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyProject-tvOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyProject-tvOSTests/Pods-MyProject-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -424,7 +427,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				363DF78C4D1E4BB2A4F0BEBC /* libBVLinearGradient.a in Frameworks */,
-				4FEE0B25A1394834B32402FD /* BuildFile in Frameworks */,
+				4FEE0B25A1394834B32402FD /* (null) in Frameworks */,
 				629EF1BC3C4244B48481BEC8 /* libRNImagePicker.a in Frameworks */,
 				4CE1B90AE5A02AB218750076 /* libPods-MyProject.a in Frameworks */,
 			);
@@ -547,6 +550,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				A3F7A3FB2086F1AD00561A88 /* NativeTest.h */,
+				A3F7A3FD2086F23E00561A88 /* NativeTest.m */,
 			);
 			name = MyProject;
 			sourceTree = "<group>";
@@ -1348,6 +1353,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				A3F7A3FE2086F23E00561A88 /* NativeTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
