@@ -10,8 +10,8 @@
 #define NativeTest_h
 
 #import <Foundation/Foundation.h>
-#import <React/RCTBridgeModule.h>
-@interface NativeTest : NSObject<RCTBridgeModule>
+#import <React/BridgeModule.h>
+@interface NativeTest : NSObject<BridgeModule>
 
 @end
 

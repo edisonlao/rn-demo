@@ -3,7 +3,7 @@ package com.myproject;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.rnfs.RNFSPackage;
+import com.terrylinla.rnsketchcanvas.SketchCanvasPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -30,11 +30,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFSPackage(),
-            new LinearGradientPackage(),
-              new FCMModulePackage(),
-                new OpenGPSModulePackage(),
-                  new ImagePickerPackage()
+            new SketchCanvasPackage(),
+              new LinearGradientPackage(),
+                new FCMModulePackage(),
+                  new OpenGPSModulePackage(),
+                    new ImagePickerPackage()
       );
     }
 

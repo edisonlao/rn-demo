@@ -8,8 +8,8 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-#import <React/RCTLog.h>
-#import <React/RCTRootView.h>
+#import <React/Log.h>
+#import <React/RootView.h>
 
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React Native!"
@@ -35,13 +35,13 @@
 
 - (void)testRendersWelcomeScreen
 {
-  UIViewController *vc = [[[RCTSharedApplication() delegate] window] rootViewController];
+  UIViewController *vc = [[[SharedApplication() delegate] window] rootViewController];
   NSDate *date = [NSDate dateWithTimeIntervalSinceNow:TIMEOUT_SECONDS];
   BOOL foundElement = NO;
 
   __block NSString *redboxError = nil;
-  RCTSetLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
-    if (level >= RCTLogLevelError) {
+  SetLogFunction(^(LogLevel level, LogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
+    if (level >= LogLevelError) {
       redboxError = message;
     }
   });
@@ -58,7 +58,7 @@
     }];
   }
 
-  RCTSetLogFunction(RCTDefaultLogFunction);
+  SetLogFunction(DefaultLogFunction);
 
   XCTAssertNil(redboxError, @"RedBox error: %@", redboxError);
   XCTAssertTrue(foundElement, @"Couldn't find element with text '%@' in %d seconds", TEXT_TO_LOOK_FOR, TIMEOUT_SECONDS);

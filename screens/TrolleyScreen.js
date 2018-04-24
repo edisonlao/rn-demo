@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {isIphoneX} from "react-native-iphone-x-helper";
+import {StackNavigator} from 'react-navigation';
+import DrawScreen from "./DrawScreen";
 
 var ImagePicker = require('react-native-image-picker');
 const options = {
@@ -35,8 +37,11 @@ const options = {
         path: 'images'
     }
 };
+const App = StackNavigator({
+    Draw: {screen: DrawScreen},
+});
 
-export default class UserScreen extends React.Component {
+export default class TrolleyScreen extends React.Component {
     static navigationOptions = ({navigation, screenProps}) => ({
         header: null
     });
@@ -49,6 +54,7 @@ export default class UserScreen extends React.Component {
     }
 
     render() {
+        const { navigate } = this.props.navigation;
         const {photos, type} = this.props;
         let conText;
         if(Platform.OS === 'android') {
@@ -62,6 +68,9 @@ export default class UserScreen extends React.Component {
                     </LinearGradient>
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <Button title="打开摄像头" onPress={() => this.openCamera()}></Button>
+                    </View>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Button title="你画我猜" onPress={() => navigate('Draw')}/>
                     </View>
                 </View>
             )
@@ -89,6 +98,10 @@ export default class UserScreen extends React.Component {
                 </View>
             )
         }
+    }
+
+    openClass(){
+
     }
 
     openCamera() {

@@ -8,6 +8,7 @@ import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import TrolleyScreen from '../screens/TrolleyScreen';
 import UserScreen from '../screens/UserScreen';
+import DrawScreen from "../screens/DrawScreen";
 
 export default TabNavigator(
     {
@@ -18,7 +19,7 @@ export default TabNavigator(
             screen: SearchScreen,
         },
         Trolley: {
-            screen: TrolleyScreen,
+            screen: DrawScreen,
         },
         User: {
             screen: UserScreen,
@@ -60,7 +61,7 @@ export default TabNavigator(
         }),
         tabBarComponent: TabBarBottom,
         tabBarPosition: 'bottom',
-        animationEnabled: false,
+        animationEnabled: true,
         swipeEnabled: false,
     }
 );
