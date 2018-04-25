@@ -9,29 +9,43 @@ import {
     Platform,
     ViewPropTypes,
     Button,
+    Image,
     UIManager,
     StatusBar,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
-import { SketchCanvas } from '@terrylinla/react-native-sketch-canvas';
+import config from '../../components/socket/config.js';
+import io from 'socket.io-client';
 
 export default class ExampleScreen extends React.Component {
+    socket: Object;
+
     constructor(props){
         super(props);
         this.state = {
             color: '#FF0000',
             strokeWidth: 5
-        }
+        };
+
+        console.log("开始连接..");
+        this.socket = io('20252sq156.51mypc.cn:51172', {
+            transports: ['websocket']
+        });
+
+        console.log("正在连接..");
+        this.socket.on('connect', () => {
+            this.socketId = this.socket.id;
+            console.log("连接成功");
+        });
+
     }
 
-    changeColor(color){
-        Alert.alert(color);
-        this.setState({
-            color: color
-        })
-    };
+    sendCanvasPath(path){
+        console.log("开始传路径！");
+        this.socket.emit('message', path);
+        console.log("传输完毕！")
+    }
 
     clear() {
         if (Platform.OS === 'ios') {
@@ -55,10 +69,12 @@ export default class ExampleScreen extends React.Component {
                     <Text style={styles.titleText}>Draw</Text>
                 </LinearGradient>
                 <View>
+                    <Image source={require("../../assets/images/musicscore.jpg")} style={styles.bottomImgTeacher}></Image>
                     <RNSketchCanvas
                         ref={ref => this.canvas1=ref}
                         strokeColor={this.state.color}
                         strokeWidth={this.state.strokeWidth}
+                        user={'陈老师'}
                         canvasStyle={{
                             width: 1 * Dimensions.get("window").width,
                             height: 0.28 * Dimensions.get("window").height
@@ -102,11 +118,20 @@ export default class ExampleScreen extends React.Component {
                                 imageType: 'jpg'
                             }
                         }}
+                        onPathsChange={(pathsCount) => {
+                            console.log('操作步数:', pathsCount)
+                        }}
+                        onStrokeEnd={(path) => {
+                            console.log("实时参数:" + JSON.stringify(path))
+                            this.canvas2.addPath(path)
+                        }}
                     />
+                    <Image source={require("../../assets/images/musicscore.jpg")} style={styles.bottomImgStu}></Image>
                     <RNSketchCanvas
                         ref={ref => this.canvas2=ref}
                         strokeColor={this.state.color}
                         strokeWidth={this.state.strokeWidth}
+                        user={'学生小明'}
                         canvasStyle={{
                             width: 1 * Dimensions.get("window").width,
                             height: 0.28 * Dimensions.get("window").height
@@ -150,23 +175,21 @@ export default class ExampleScreen extends React.Component {
                                 imageType: 'jpg'
                             }
                         }}
+                        onSketchSaved={success => {
+                            Alert.alert('Image saved!')
+                            // Alert.alert(String(success))
+                        }}
+                        onPathsChange={(pathsCount) => {
+                            console.log('操作步数:', pathsCount)
+                        }}
+                        onStrokeEnd={(path) => {
+                            console.log("实时参数:" + JSON.stringify(path));
+                            this.sendCanvasPath(path);
+                            this.canvas1.addPath(path)
+                        }}
                     />
                     <View style={styles.strokeColorView}>
-                        <TouchableOpacity style={[styles.btnStrokeColor, {backgroundColor: '#FF0000'}]}
-                                          onPress={() => {this.changeColor("#FF0000")}}>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.btnStrokeColor, {backgroundColor: '#000000'}]}
-                                          onPress={() => {this.changeColor("#000000")}}>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.btnStrokeColor, {backgroundColor: '#00FFFF'}]}
-                                          onPress={() => {this.changeColor("#00FFFF")}}>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.btnStrokeColor, {backgroundColor: '#FFFF00'}]}
-                                          onPress={() => {this.changeColor("#FFFF00")}}>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.btnStrokeColor, {backgroundColor: '#808080'}]}
-                                          onPress={() => {this.changeColor("#808080")}}>
-                        </TouchableOpacity>
+
                     </View>
                     <View style={styles.strokeColorView}>
 
@@ -259,4 +282,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#39579A'
     },
+    bottomImgTeacher:{
+        width: 1 * Dimensions.get("window").width,
+        height: 0.28 *  Dimensions.get("window").height,
+        position: 'absolute',
+        top: 0.05 * Dimensions.get("window").height
+    },
+    bottomImgStu:{
+        width: 1 * Dimensions.get("window").width,
+        height: 0.28 *  Dimensions.get("window").height,
+        position: 'absolute',
+        top: 0.45 * Dimensions.get("window").height
+    }
 });

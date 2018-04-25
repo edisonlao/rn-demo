@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, StatusBar, Platform, Switch, PixelRatio, Dimensions} from 'react-native';
+import {View, Text, Button, StyleSheet, StatusBar, Platform, Switch, PixelRatio, Dimensions} from 'react-native';
 import ReactFCM from '../src/module/ReactFCM';
 import LinearGradient from 'react-native-linear-gradient';
 import {isIphoneX} from "react-native-iphone-x-helper";
@@ -28,6 +28,10 @@ export default class UserScreen extends React.Component {
             })
         }
     };
+
+    reload(){
+        ReactFCM.reload();
+    }
 
     render() {
         if(Platform.OS === 'android') {
@@ -61,6 +65,7 @@ export default class UserScreen extends React.Component {
                     </View>
 
                 </View>
+                <Button title="reload" onPress={() => this.reload()}></Button>
             </View>);
         }else {
             return (<View>
@@ -89,6 +94,7 @@ export default class UserScreen extends React.Component {
                     </View>
 
                 </View>
+                <Button title="reload" onPress={() => this.reload()}></Button>
             </View>)
         }
     }
