@@ -16,6 +16,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import config from '../../components/socket/config.js';
+
 import io from 'socket.io-client';
 
 export default class ExampleScreen extends React.Component {
@@ -25,26 +26,9 @@ export default class ExampleScreen extends React.Component {
         super(props);
         this.state = {
             color: '#FF0000',
-            strokeWidth: 5
+            strokeWidth: 5,
         };
 
-        console.log("开始连接..");
-        this.socket = io('20252sq156.51mypc.cn:51172', {
-            transports: ['websocket']
-        });
-
-        console.log("正在连接..");
-        this.socket.on('connect', () => {
-            this.socketId = this.socket.id;
-            console.log("连接成功");
-        });
-
-    }
-
-    sendCanvasPath(path){
-        console.log("开始传路径！");
-        this.socket.emit('message', path);
-        console.log("传输完毕！")
     }
 
     clear() {
@@ -55,11 +39,43 @@ export default class ExampleScreen extends React.Component {
         }
     }
 
-    render() {
-        var strokeColorArray = [
-            "#FF0000", "#00FFFF", "#0000FF", "#FFFF00", "#00FF00", "#808080"
-        ];
+    exitRoom(){
 
+    }
+
+    sendCanvasPath(path){
+        console.log("开始传路径！");
+
+        console.log("传输完毕！")
+    }
+
+    render() {
+        {
+            console.log("开始连接..");
+            this.socket = io('http://20252sq156.51mypc.cn:49275', {
+                transports: ['websocket'],
+            });
+            console.log("正在连接..");
+            this.socket.on('connect', () => {
+                this.socketId = this.socket.id;
+                this.socket.emit('join', '张三')
+                console.log("连接成功");
+            });
+
+            this.socket.on('disconnect', () => {
+                console.log("来日再战");
+            });
+
+            this.socket.on('status', function (msg) {
+                Alert.alert("连接状态:" + msg);
+            });
+
+            this.socket.on('user', function (msg) {
+                Alert.alert(msg);
+            });
+
+
+        }
         return (
             <View>
                 <StatusBar style={styles.statusBarView} backgroundColor={"#4f8eff"}/>
@@ -71,7 +87,7 @@ export default class ExampleScreen extends React.Component {
                 <View>
                     <Image source={require("../../assets/images/musicscore.jpg")} style={styles.bottomImgTeacher}></Image>
                     <RNSketchCanvas
-                        ref={ref => this.canvas1=ref}
+                        ref={ref => this.canvas1 = ref}
                         strokeColor={this.state.color}
                         strokeWidth={this.state.strokeWidth}
                         user={'陈老师'}
@@ -82,6 +98,8 @@ export default class ExampleScreen extends React.Component {
                         closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}
                         onClosePressed={() => {
                             this.setState({ example: 0 })
+                            // this.exitRoom();
+                            this.socket.disconnect();
                         }}
                         strokeComponent={color => (
                             <View style={[{ backgroundColor: color }, styles.strokeColorButton]} />
@@ -122,13 +140,22 @@ export default class ExampleScreen extends React.Component {
                             console.log('操作步数:', pathsCount)
                         }}
                         onStrokeEnd={(path) => {
-                            console.log("实时参数:" + JSON.stringify(path))
-                            this.canvas2.addPath(path)
+                            console.log("实时参数:" + JSON.stringify(path));
+                            // this.canvas2.addPath(path);
+                            // this.sendCanvasPath(path);
+                            this.socket.emit('chatMessage', path);
                         }}
                     />
                     <Image source={require("../../assets/images/musicscore.jpg")} style={styles.bottomImgStu}></Image>
                     <RNSketchCanvas
-                        ref={ref => this.canvas2=ref}
+                        ref={ref => this.socket.on('message', function (path) {
+                            var re = new RegExp("\\\\","g");
+                            var finalPath = JSON.stringify(path).replace(re, "");
+                            finalPath = finalPath.substr(1, finalPath.length - 2);
+                            console.log("获取广播:" + finalPath);
+                            // TODO 把所有反斜杠去掉
+                            ref.addPath(JSON.parse(finalPath));
+                        })}
                         strokeColor={this.state.color}
                         strokeWidth={this.state.strokeWidth}
                         user={'学生小明'}
@@ -138,25 +165,32 @@ export default class ExampleScreen extends React.Component {
                         }}
                         closeComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Close</Text></View>}
                         onClosePressed={() => {
-                            this.setState({ example: 0 })
+                            this.setState({example: 0})
                         }}
                         strokeComponent={color => (
-                            <View style={[{ backgroundColor: color }, styles.strokeColorButton]} />
+                            <View style={[{backgroundColor: color}, styles.strokeColorButton]}/>
                         )}
                         strokeSelectedComponent={(color, index, changed) => {
                             return (
-                                <View style={[{ backgroundColor: color, borderWidth: 2 }, styles.strokeColorButton]} />
+                                <View style={[{backgroundColor: color, borderWidth: 2}, styles.strokeColorButton]}/>
                             )
                         }}
                         strokeWidthComponent={(w) => {
                             return (<View style={styles.strokeWidthButton}>
-                                    <View  style={{
-                                        backgroundColor: 'white', marginHorizontal: 2.5, justifyContent: 'center', alignItems: 'center',
-                                        width: Math.sqrt(w / 3) * 10, height: Math.sqrt(w / 3) * 10, borderRadius: Math.sqrt(w / 3) * 10 / 2
-                                    }} />
+                                    <View style={{
+                                        backgroundColor: 'white',
+                                        marginHorizontal: 2.5,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: Math.sqrt(w / 3) * 10,
+                                        height: Math.sqrt(w / 3) * 10,
+                                        borderRadius: Math.sqrt(w / 3) * 10 / 2
+                                    }}/>
                                 </View>
-                            )}}
-                        undoComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Undo</Text></View>}
+                            )
+                        }}
+                        undoComponent={<View style={styles.functionButton}><Text
+                            style={{color: 'white'}}>Undo</Text></View>}
                         onUndoPressed={(id) => {
                             this.canvas2.deletePath(id)
                         }}
@@ -166,7 +200,8 @@ export default class ExampleScreen extends React.Component {
                         }}
                         defaultStrokeIndex={0}
                         defaultStrokeWidth={10}
-                        saveComponent={<View style={styles.functionButton}><Text style={{color: 'white'}}>Save</Text></View>}
+                        saveComponent={<View style={styles.functionButton}><Text
+                            style={{color: 'white'}}>Save</Text></View>}
                         savePreference={() => {
                             return {
                                 folder: 'RNSketchCanvas',
@@ -184,20 +219,15 @@ export default class ExampleScreen extends React.Component {
                         }}
                         onStrokeEnd={(path) => {
                             console.log("实时参数:" + JSON.stringify(path));
-                            this.sendCanvasPath(path);
                             this.canvas1.addPath(path)
                         }}
                     />
-                    <View style={styles.strokeColorView}>
 
-                    </View>
-                    <View style={styles.strokeColorView}>
-
-                    </View>
                 </View>
             </View>
         );
     }
+
 }
 
 const styles = StyleSheet.create({
