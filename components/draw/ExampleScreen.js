@@ -21,6 +21,7 @@ import io from 'socket.io-client';
 
 export default class ExampleScreen extends React.Component {
     socket: Object;
+    showCanvas: object;
 
     constructor(props){
         super(props);
@@ -73,8 +74,6 @@ export default class ExampleScreen extends React.Component {
             this.socket.on('user', function (msg) {
                 Alert.alert(msg);
             });
-
-
         }
         return (
             <View>
@@ -152,8 +151,6 @@ export default class ExampleScreen extends React.Component {
                             var re = new RegExp("\\\\","g");
                             var finalPath = JSON.stringify(path).replace(re, "");
                             finalPath = finalPath.substr(1, finalPath.length - 2);
-                            console.log("获取广播:" + finalPath);
-                            // TODO 把所有反斜杠去掉
                             ref.addPath(JSON.parse(finalPath));
                         })}
                         strokeColor={this.state.color}
