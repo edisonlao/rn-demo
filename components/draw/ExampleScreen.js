@@ -19,6 +19,17 @@ import config from '../../components/socket/config.js';
 
 import io from 'socket.io-client';
 
+let WebRTC = require('react-native-webrtc');
+let {
+    RTCPeerConnection,
+    RTCIceCandidate,
+    RTCSessionDescription,
+    RTCView,
+    MediaStream,
+    MediaStreamTrack,
+    getUserMedia,
+} = WebRTC;
+
 export default class ExampleScreen extends React.Component {
     socket: Object;
     showCanvas: object;

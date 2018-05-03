@@ -35,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
                   new FCMModulePackage(),
                     new OpenGPSModulePackage(),
                       new ImagePickerPackage()
+//                        new WebRTCModulePackage()
       );
     }
 
