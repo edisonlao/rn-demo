@@ -102,7 +102,7 @@ export default class SearchScreen extends React.Component {
                     <LinearGradient
                         colors={['#4f8eff', '#37bafe']}
                         style={isIphoneX() ? styles.titleViewIphoneX : styles.titleViewIOS}>
-                        <Text style={styles.titleText}>Search</Text>
+                        <Text style={styles.titleText}>Searchs</Text>
                     </LinearGradient>
                     <View>
                         <Text>当前城市: {this.state.activeRadioName}</Text>
