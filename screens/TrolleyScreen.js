@@ -100,10 +100,6 @@ export default class TrolleyScreen extends React.Component {
         }
     }
 
-    openClass(){
-
-    }
-
     openCamera() {
         ImagePicker.showImagePicker(options, (response) => {
             if (response.didCancel) {

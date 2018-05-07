@@ -9,29 +9,30 @@ import Colors from '../constants/Colors';
 
 import NowScreen from '../screens/NowScreen';
 import HotScreen from '../screens/HotScreen';
+import NowApp from '../router_flux/NowApp';
 
 export default TabNavigator(
     {
         NOW: {
-            screen: NowScreen,
+            screen: NowApp,
         },
         Hot: {
             screen: HotScreen,
         },
         Clothes: {
-            screen: NowScreen,
+            screen: NowApp,
         },
         Trousers: {
             screen: HotScreen,
         },
         Shoes: {
-            screen: NowScreen,
+            screen: NowApp,
         },
         Computer: {
             screen: HotScreen,
         },
         Cellphone: {
-            screen: HotScreen,
+            screen: NowApp,
         },
     },
     {

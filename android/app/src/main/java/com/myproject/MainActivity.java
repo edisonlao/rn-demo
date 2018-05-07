@@ -74,7 +74,7 @@ public class MainActivity extends ReactActivity {
                         cityName = GPSModule.getCNBylocation(context);
                     }
 
-                    Toast.makeText(getApplicationContext(), "location: " + config.getSETTING_LOCATION(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "您有新的消息", Toast.LENGTH_SHORT).show();
                     if(notifiAddress.equals(cityName) || cityName == null) {
                         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                         PendingIntent intentPend = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
