@@ -13,12 +13,14 @@ import {
     ListView,
     TouchableOpacity,
     ScrollView,
-    Modal
+    Modal,
+    AlertIOS,
 } from 'react-native';
 import {
     Actions
 } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { isIphoneX } from 'react-native-iphone-x-helper';
 
 var ImagePicker = require('react-native-image-picker');
 const options = {
@@ -57,8 +59,14 @@ export default class SellScreen extends React.Component {
             dataSource: ds,
             loading: false,
             avatarSource: null,
-            condition: 1,
+            active: 1,
         }
+    }
+
+    setActive(index){
+        this.setState({
+            active: index
+        });
     }
 
     render() {
@@ -67,17 +75,22 @@ export default class SellScreen extends React.Component {
         let conText;
         return (
             <View>
-                <View style={styles.container}>
+                {/******************************** 头部tab **********************************/}
+                <View style={Platform.OS === 'android' ?
+                    styles.container : isIphoneX() ?
+                        styles.container_iphoneX : styles.container_ios}>
                     <TouchableOpacity onPress={() => {
                         Actions.pop()
                     }}>
                         <View style={styles.tab_return_view}>
                             <Image
-                                style={styles.tab_return_icon}
+                                style={isIphoneX() ? styles.tab_return_icon_iphoneX : styles.tab_return_icon}
                                 source={require('../imgs/icon_back.png')}/>
                         </View>
                     </TouchableOpacity>
-                    <View style={styles.tab_title_view}>
+                    <View style={Platform.OS === 'android' ?
+                        styles.tab_title_view : isIphoneX() ?
+                            styles.tab_title_view_iphoneX : styles.tab_title_view_ios}>
                         <Text style={styles.tab_title}>
                             Sell
                         </Text>
@@ -85,12 +98,12 @@ export default class SellScreen extends React.Component {
                     <TouchableOpacity>
                         <View style={styles.tab_ship_view}>
                             <Image
-                                style={styles.tab_skip_icon}
+                                style={isIphoneX() ? styles. tab_skip_icon_iphoneX : styles.tab_skip_icon}
                                 source={require('../imgs/icon_skip.png')}/>
                         </View>
                     </TouchableOpacity>
                 </View>
-                {/********************************分割线**********************************/}
+                {/******************************** 打开摄像头或相册 **********************************/}
                 <ScrollView>
                     <View style={styles.open_camera_view}>
                         <TouchableOpacity onPress={() => this.openCamera()}>
@@ -106,12 +119,12 @@ export default class SellScreen extends React.Component {
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>
-                    {/*******************************分割线**********************************/}
+                    {/******************************* title输入框 **********************************/}
                     <View style={styles.panel}>
                         <View style={styles.panel_header}>
                             <View style={{width: 0.5 * Dimensions.get('window').width}}>
                                 <Text style={styles.header_left}>
-                                    <Icon name={"md-medical"} style={{color: 'red'}}/>
+                                    <Icon name={"md-medical"} style={{color: '#ee5a5a'}}/>&nbsp;
                                     TITLE
                                 </Text>
 
@@ -129,12 +142,12 @@ export default class SellScreen extends React.Component {
                                 style={styles.sm_input}/>
                         </View>
                     </View>
-                    {/*******************************分割线**********************************/}
+                    {/******************************* 描述输入框 **********************************/}
                     <View style={styles.panel}>
                         <View style={styles.panel_header}>
                             <View style={{width: 0.5 * Dimensions.get('window').width}}>
                                 <Text style={styles.header_left}>
-                                    <Icon name={"md-medical"} style={{color: 'red'}}/>
+                                    <Icon name={"md-medical"} style={{color: '#ee5a5a',marginRight: 5}}/>&nbsp;
                                     DESCRIPTION
                                 </Text>
 
@@ -153,12 +166,12 @@ export default class SellScreen extends React.Component {
                                 style={styles.lg_input}/>
                         </View>
                     </View>
-                    {/*******************************分割线**********************************/}
+                    {/******************************* 产地输入框 **********************************/}
                     <View style={styles.panel}>
                         <View style={styles.panel_header}>
                             <View style={{width: 0.5 * Dimensions.get('window').width}}>
                                 <Text style={styles.header_left}>
-                                    <Icon name={"md-medical"} style={{color: 'red'}}/>
+                                    <Icon name={"md-medical"} style={{color: '#ee5a5a'}}/>&nbsp;
                                     SHIPS FROM
                                 </Text>
 
@@ -171,12 +184,12 @@ export default class SellScreen extends React.Component {
                                 style={styles.sm_input}/>
                         </View>
                     </View>
-                    {/*******************************分割线**********************************/}
+                    {/******************************* 价格输入框 **********************************/}
                     <View style={styles.panel}>
                         <View style={styles.panel_header}>
                             <View style={{width: 0.5 * Dimensions.get('window').width}}>
                                 <Text style={styles.header_left}>
-                                    <Icon name={"md-medical"} style={{color: 'red'}}/>
+                                    <Icon name={"md-medical"} style={{color: '#ee5a5a'}}/>&nbsp;
                                     SET PRICE
                                 </Text>
                             </View>
@@ -188,45 +201,55 @@ export default class SellScreen extends React.Component {
                                 style={styles.sm_input}/>
                         </View>
                     </View>
-                    {/*******************************分割线**********************************/}
+                    {/******************************* 新旧程度选择框 **********************************/}
                     <View style={styles.panel_no_padding}>
-                        <View style={styles.panel_header}>
+                        <View style={styles.panel_header_padding_10}>
                             <View style={{width: 0.5 * Dimensions.get('window').width}}>
                                 <Text style={styles.header_left}>
-                                    <Icon name={"md-medical"} style={{color: 'red'}}/>
+                                    <Icon name={"md-medical"} style={{color: '#ee5a5a'}}/>&nbsp;
                                     CONDITION
                                 </Text>
                             </View>
                         </View>
                         <View style={styles.panel_body}>
-                            <View style={styles.condition_view_active}>
-                                <Text style={styles.condition_text_active}>
-                                    New
-                                </Text>
-                            </View>
-                            <View style={styles.condition_view_default}>
-                                <Text style={styles.condition_text_default}>
-                                    Like New
-                                </Text>
-                            </View>
-                            <View style={styles.condition_view_default}>
-                                <Text style={styles.condition_text_default}>
-                                    Good
-                                </Text>
-                            </View>
-                            <View style={styles.condition_view_default}>
-                                <Text style={styles.condition_text_default}>
-                                    Fair
-                                </Text>
-                            </View>
-                            <View style={styles.condition_view_default}>
-                                <Text style={styles.condition_text_default}>
-                                    Poor
-                                </Text>
-                            </View>
+                            <TouchableOpacity onPress={() => this.setActive(1)}>
+                                <View style={this.state.active === 1 ? styles.condition_view_active : styles.condition_view_default}>
+                                    <Text style={this.state.active === 1 ? styles.condition_text_active : styles.condition_text_default}>
+                                        New
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.setActive(2)}>
+                                <View style={this.state.active === 2 ? styles.condition_view_active : styles.condition_view_default}>
+                                    <Text style={this.state.active === 2 ? styles.condition_text_active : styles.condition_text_default}>
+                                        Like New
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.setActive(3)}>
+                                <View style={this.state.active === 3 ? styles.condition_view_active : styles.condition_view_default}>
+                                    <Text style={this.state.active === 3 ? styles.condition_text_active : styles.condition_text_default}>
+                                        Good
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.setActive(4)}>
+                                <View style={this.state.active === 4 ? styles.condition_view_active : styles.condition_view_default}>
+                                    <Text style={this.state.active === 4 ? styles.condition_text_active : styles.condition_text_default}>
+                                        Fair
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.setActive(5)}>
+                                <View style={this.state.active === 5 ? styles.condition_view_active : styles.condition_view_default}>
+                                    <Text style={this.state.active === 5 ? styles.condition_text_active : styles.condition_text_default}>
+                                        Poor
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                    {/*******************************分割线**********************************/}
+                    {/******************************* 提交按钮 **********************************/}
                     <View style={styles.panel}>
                         <View style={styles.btn_submit}>
                             <Text style={{textAlign:'center', color:'#ffffff'}}>
@@ -280,6 +303,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#ffffff',
     },
+    container_ios: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.15 * Dimensions.get('window').width,
+        paddingTop: 0.03 * Dimensions.get('window').width,
+        flexDirection: 'row',
+        backgroundColor: '#ffffff',
+    },
+    container_iphoneX: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.18 * Dimensions.get('window').width,
+        paddingTop: 0.03 * Dimensions.get('window').width,
+        flexDirection: 'row',
+        backgroundColor: '#ffffff',
+    },
     tab_return_view: {
         width: 0.12 * Dimensions.get('window').width,
         height: 0.12 * Dimensions.get('window').width,
@@ -290,10 +327,32 @@ const styles = StyleSheet.create({
         marginLeft: 0.06 * Dimensions.get('window').width,
         marginTop: 0.03 * Dimensions.get('window').width,
     },
+    tab_return_icon_iphoneX: {
+        width: 0.06 * Dimensions.get('window').width,
+        height: 0.06 * Dimensions.get('window').width,
+        marginLeft: 0.06 * Dimensions.get('window').width,
+        marginTop: 0.06 * Dimensions.get('window').width,
+    },
     tab_title_view: {
         width: 0.74 * Dimensions.get('window').width,
         height: 0.12 * Dimensions.get('window').width,
         marginTop: 0.03 * Dimensions.get('window').width,
+        backgroundColor: '#ffffff',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    tab_title_view_ios: {
+        width: 0.74 * Dimensions.get('window').width,
+        height: 0.09 * Dimensions.get('window').width,
+        marginTop: 0.03 * Dimensions.get('window').width,
+        backgroundColor: '#ffffff',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    tab_title_view_iphoneX: {
+        width: 0.74 * Dimensions.get('window').width,
+        height: 0.09 * Dimensions.get('window').width,
+        marginTop: 0.06 * Dimensions.get('window').width,
         backgroundColor: '#ffffff',
         justifyContent: 'center',
         flexDirection: 'row',
@@ -311,6 +370,12 @@ const styles = StyleSheet.create({
         height: 0.06 * Dimensions.get('window').width,
         marginLeft: 0.02 * Dimensions.get('window').width,
         marginTop: 0.03 * Dimensions.get('window').width,
+    },
+    tab_skip_icon_iphoneX: {
+        width: 0.06 * Dimensions.get('window').width,
+        height: 0.06 * Dimensions.get('window').width,
+        marginLeft: 0.02 * Dimensions.get('window').width,
+        marginTop: 0.06 * Dimensions.get('window').width,
     },
     open_camera_view: {
         width: 0.995 * Dimensions.get('window').width,
@@ -360,6 +425,13 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 5,
     },
+    panel_header_padding_10: {
+        width: 1 * Dimensions.get('window').width,
+        flexDirection: 'row',
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+    },
     header_left: {
         alignSelf: 'flex-start'
     },
@@ -374,7 +446,7 @@ const styles = StyleSheet.create({
     sm_input:{
         width: 1 * Dimensions.get('window').width - 20,
         height: 50,
-        borderWidth: 1,
+        borderWidth: 0.5,
         paddingLeft: 5,
         borderColor: '#ccc',
         borderRadius: 4,
@@ -384,7 +456,7 @@ const styles = StyleSheet.create({
     lg_input:{
         width: 1 * Dimensions.get('window').width - 20,
         height: 150,
-        borderWidth: 1,
+        borderWidth: 0.5,
         paddingLeft: 5,
         borderColor: '#ccc',
         borderRadius: 4,

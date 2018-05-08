@@ -10,12 +10,14 @@ import {
     ListView,
     TouchableOpacity,
     Modal,
-    ScrollView
+    ScrollView,
+    Platform
 } from 'react-native';
 import {
     Actions
 } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { isIphoneX } from 'react-native-iphone-x-helper';
 
 export default class Commodity extends Component {
 
@@ -62,17 +64,21 @@ export default class Commodity extends Component {
     render() {
         return (
             <View>
-                <View style={styles.container}>
+                <View style={Platform.OS === 'android' ?
+                    styles.container : isIphoneX() ?
+                        styles.container_iphoneX : styles.container_ios}>
                     <TouchableOpacity onPress={() => {
                         Actions.pop()
                     }}>
                         <View style={styles.tab_return_view}>
                             <Image
-                                style={styles.tab_return_icon}
+                                style={isIphoneX() ? styles.tab_return_icon_iphoneX : styles.tab_return_icon}
                                 source={require('../imgs/icon_back.png')}/>
                         </View>
                     </TouchableOpacity>
-                    <View style={styles.tab_title_view}>
+                    <View style={Platform.OS === 'android' ?
+                        styles.tab_title_view : isIphoneX() ?
+                            styles.tab_title_view_iphoneX : styles.tab_title_view_ios}>
                         <Text style={styles.tab_title}>
                             Commodity
                         </Text>
@@ -80,7 +86,7 @@ export default class Commodity extends Component {
                     <TouchableOpacity>
                         <View style={styles.tab_ship_view}>
                             <Image
-                                style={styles.tab_skip_icon}
+                                style={isIphoneX() ? styles. tab_skip_icon_iphoneX : styles.tab_skip_icon}
                                 source={require('../imgs/icon_skip.png')}/>
                         </View>
                     </TouchableOpacity>
@@ -88,7 +94,7 @@ export default class Commodity extends Component {
                 {/********************************分割线**********************************/}
                 <ScrollView
                     ref="scrollView"
-                    style={styles.commodity_info_view}>
+                    style={Platform.OS === 'android' ? styles.commodity_info_view : styles.commodity_info_view_ios}>
                     <Image
                         style={styles.commodity_img}
                         source={this.state.commodity.img}/>
@@ -99,13 +105,13 @@ export default class Commodity extends Component {
                         </Text>
                     </View>
                     <View style={styles.commodity_contract}>
-                        <View style={styles.commodity_like}>
+                        <View style={isIphoneX ? styles.commodity_like_iphoneX : styles.commodity_like}>
                             <Icon name="md-heart-outline" style={styles.commodity_icon}/>
                             <Text style={styles.commodity_icon_text}>
                                 Like
                             </Text>
                         </View>
-                        <View style={styles.commodity_comment}>
+                        <View style={isIphoneX ? styles.commodity_comment_iphoneX : styles.commodity_comment}>
                             <Icon name="md-chatboxes" style={styles.commodity_icon}/>
                             <Text style={styles.commodity_icon_text}>
                                 Comment
@@ -168,7 +174,7 @@ export default class Commodity extends Component {
                     </View>
                 </ScrollView>
                 {/********************************分割线**********************************/}
-                <View style={styles.buyView}>
+                <View style={Platform.OS === 'android' ? styles.buyView : isIphoneX() ? styles.buyView_ios_iphoneX : styles.buyView_ios}>
                     <Text style={styles.price}>
                         {this.state.commodity.price}
                         </Text>
@@ -176,8 +182,8 @@ export default class Commodity extends Component {
                         Delivery to
                     </Text>
                     <TouchableOpacity>
-                        <View style={styles.buyBtn}>
-                            <Text style={styles.buyBtnText}>
+                        <View style={isIphoneX() ? styles.buyBtn_iphoneX : styles.buyBtn}>
+                            <Text style={isIphoneX() ? styles.buyBtnText_iphoneX : styles.buyBtnText}>
                                 Buy
                             </Text>
                         </View>
@@ -216,6 +222,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#ffffff',
     },
+    container_ios: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.15 * Dimensions.get('window').width,
+        paddingTop: 0.03 * Dimensions.get('window').width,
+        flexDirection: 'row',
+        backgroundColor: '#ffffff',
+    },
+    container_iphoneX: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.18 * Dimensions.get('window').width,
+        paddingTop: 0.03 * Dimensions.get('window').width,
+        flexDirection: 'row',
+        backgroundColor: '#ffffff',
+    },
     tab_return_view: {
         width: 0.12 * Dimensions.get('window').width,
         height: 0.12 * Dimensions.get('window').width,
@@ -226,10 +246,32 @@ const styles = StyleSheet.create({
         marginLeft: 0.06 * Dimensions.get('window').width,
         marginTop: 0.03 * Dimensions.get('window').width,
     },
+    tab_return_icon_iphoneX: {
+        width: 0.06 * Dimensions.get('window').width,
+        height: 0.06 * Dimensions.get('window').width,
+        marginLeft: 0.06 * Dimensions.get('window').width,
+        marginTop: 0.06 * Dimensions.get('window').width,
+    },
     tab_title_view: {
         width: 0.74 * Dimensions.get('window').width,
         height: 0.12 * Dimensions.get('window').width,
         marginTop: 0.03 * Dimensions.get('window').width,
+        backgroundColor: '#ffffff',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    tab_title_view_ios: {
+        width: 0.74 * Dimensions.get('window').width,
+        height: 0.09 * Dimensions.get('window').width,
+        marginTop: 0.03 * Dimensions.get('window').width,
+        backgroundColor: '#ffffff',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    tab_title_view_iphoneX: {
+        width: 0.74 * Dimensions.get('window').width,
+        height: 0.09 * Dimensions.get('window').width,
+        marginTop: 0.06 * Dimensions.get('window').width,
         backgroundColor: '#ffffff',
         justifyContent: 'center',
         flexDirection: 'row',
@@ -248,11 +290,23 @@ const styles = StyleSheet.create({
         marginLeft: 0.02 * Dimensions.get('window').width,
         marginTop: 0.03 * Dimensions.get('window').width,
     },
+    tab_skip_icon_iphoneX: {
+        width: 0.06 * Dimensions.get('window').width,
+        height: 0.06 * Dimensions.get('window').width,
+        marginLeft: 0.02 * Dimensions.get('window').width,
+        marginTop: 0.06 * Dimensions.get('window').width,
+    },
     commodity_info_view: {
         margin: 0,
         padding: 0,
         width: 1 * Dimensions.get('window').width,
         height: 0.9 * Dimensions.get('window').height,
+    },
+    commodity_info_view_ios: {
+        margin: 0,
+        padding: 0,
+        width: 1 * Dimensions.get('window').width,
+        height: 0.91 * Dimensions.get('window').height,
     },
     commodity_img:{
         width: 1 * Dimensions.get('window').width,
@@ -282,11 +336,27 @@ const styles = StyleSheet.create({
         marginTop: 0.85 * Dimensions.get('window').height,
         flexDirection: 'row',
     },
+    buyView_ios: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.15 * Dimensions.get('window').height,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        position: 'absolute',
+        marginTop: 0.885 * Dimensions.get('window').height,
+        flexDirection: 'row',
+    },
+    buyView_ios_iphoneX: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.13 * Dimensions.get('window').height,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        position: 'absolute',
+        marginTop: 0.905 * Dimensions.get('window').height,
+        flexDirection: 'row',
+    },
     price: {
         width: 0.36 * Dimensions.get('window').width,
         color: '#ffffff',
         fontSize: 0.05 * Dimensions.get('window').height,
-        marginTop: 0.02 * Dimensions.get('window').height,
+        marginTop: 0.025 * Dimensions.get('window').height,
         marginLeft: 0.02 * Dimensions.get('window').width,
     },
     delivery: {
@@ -307,9 +377,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 5,
     },
+    buyBtn_iphoneX:{
+        width: 0.3 * Dimensions.get('window').width,
+        height: 0.075 * Dimensions.get('window').height,
+        marginTop: 0.01 * Dimensions.get('window').height,
+        marginRight: 0.005 * Dimensions.get('window').height,
+        textAlign: 'right',
+        backgroundColor: '#ee5a5a',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        borderRadius: 5,
+        borderBottomEndRadius: 35,
+    },
     buyBtnText:{
         fontSize: 0.05 * Dimensions.get('window').height,
-        marginTop: 0.01 * Dimensions.get('window').height,
+        marginTop: 0.009 * Dimensions.get('window').height,
+        color:'#ffffff'
+    },
+    buyBtnText_iphoneX:{
+        fontSize: 0.04 * Dimensions.get('window').height,
+        marginTop: 0.009 * Dimensions.get('window').height,
         color:'#ffffff'
     },
     commodity_contract:{
@@ -322,8 +409,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     commodity_like:{
-        width: 0.3 * Dimensions.get('window').width,
+        width: 0.33 * Dimensions.get('window').width,
         height: 0.06 * Dimensions.get('window').height,
+        padding: 5,
+        borderRadius: 100,
+        flexDirection: 'row',
+        backgroundColor: '#dcdcdc'
+    },
+    commodity_like_iphoneX:{
+        width: 0.33 * Dimensions.get('window').width,
+        height: 0.053 * Dimensions.get('window').height,
         padding: 5,
         borderRadius: 100,
         flexDirection: 'row',
@@ -343,8 +438,17 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     commodity_comment:{
-        width: 0.3 * Dimensions.get('window').width,
+        width: 0.33 * Dimensions.get('window').width,
         height: 0.06 * Dimensions.get('window').height,
+        marginLeft: 0.02 * Dimensions.get('window').width,
+        padding: 5,
+        borderRadius: 100,
+        flexDirection: 'row',
+        backgroundColor: '#dcdcdc'
+    },
+    commodity_comment_iphoneX:{
+        width: 0.33 * Dimensions.get('window').width,
+        height: 0.053 * Dimensions.get('window').height,
         marginLeft: 0.02 * Dimensions.get('window').width,
         padding: 5,
         borderRadius: 100,

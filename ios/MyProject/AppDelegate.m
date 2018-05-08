@@ -7,8 +7,8 @@
 
 #import "AppDelegate.h"
 
-#import <React/BundleURLProvider.h>
-#import <React/RootView.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
 
 @implementation AppDelegate
 
@@ -16,9 +16,9 @@
 {
   NSURL *jsCodeLocation;
 
-  jsCodeLocation = [[BundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
-  RootView *rootView = [[RootView alloc] initWithBundleURL:jsCodeLocation
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"MyProject"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];

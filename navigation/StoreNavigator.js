@@ -73,195 +73,91 @@ export default class StoreNavigator extends React.Component {
 
     render() {
         let renderTabScreen = <TabNavigator/>;
-        let renderMainScreen;
-        switch (this.state.mainScreenIndex) {
-            case 1:
-                renderMainScreen = (
-                    <Drawer
-                        side="left" //抽屉方向 top／left／right／bottom
-                        dragging
-                        open={false}//默认是否打开抽屉
-                        tapToClose={true}//点击内容处 会关闭抽屉
-                        type='displace' //抽屉出现的方式：overlay：抽屉覆盖内容 static:抽屉一只在内容后面 打开的时内容会滑动，displace：不会覆盖的 进出
-                        openDrawerOffset={0.3} // 抽屉占整个屏幕的百分比（1-0.6=0.4）
-                        closedDrawerOffset={0}//关闭抽屉后 抽屉在屏幕中的显示比例
-                        styles={drawerStyles}//抽屉样式，背景色 透明度，阴影啥的
-                        ref={(ref) => this._drawer = ref}
-                        content={
-                            <View style={{flex: 1, backgroundColor: '#a2a2a2'}}>
-                                <StatusBar backgroundColor={"#ffffff"}/>
+        let renderMainScreen = (
+                <Drawer
+                    side="left" //抽屉方向 top／left／right／bottom
+                    dragging
+                    open={false}//默认是否打开抽屉
+                    tapToClose={true}//点击内容处 会关闭抽屉
+                    type='displace' //抽屉出现的方式：overlay：抽屉覆盖内容 static:抽屉一只在内容后面 打开的时内容会滑动，displace：不会覆盖的 进出
+                    openDrawerOffset={0.3} // 抽屉占整个屏幕的百分比（1-0.6=0.4）
+                    closedDrawerOffset={0}//关闭抽屉后 抽屉在屏幕中的显示比例
+                    styles={drawerStyles}//抽屉样式，背景色 透明度，阴影啥的
+                    ref={(ref) => this._drawer = ref}
+                    content={
+                        <View style={{flex: 1, backgroundColor: '#a2a2a2'}}>
+                            <StatusBar backgroundColor={"#ffffff"}/>
 
-                                <ImageBackground
-                                    style={styles.user_list_background}
-                                    source={require('../imgs/user_background.jpg')}>
-                                    <View style={styles.user}>
-                                        <Image source={require('../imgs/user_profile.png')}
-                                               size={28}
-                                               style={styles.userProfile}
-                                               onPress={() => {
-                                                   this.openControlPanel()
-                                               }}>
+                            <ImageBackground
+                                style={styles.user_list_background}
+                                source={require('../imgs/user_background.jpg')}>
+                                <View style={styles.user}>
+                                    <Image source={require('../imgs/user_profile.png')}
+                                           size={28}
+                                           style={styles.userProfile}
+                                           onPress={() => {
+                                               this.openControlPanel()
+                                           }}>
 
-                                        </Image>
-                                        <TouchableOpacity>
-                                            <Text style={styles.btnLogin}>User Login</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.user_listView}>
-                                        <ListView
-                                            dataSource={this.state.dataSource.cloneWithRows(this.state.userFunction)}
-                                            renderRow={this.renderUser.bind(this)}
-                                        />
-                                    </View>
-                                </ImageBackground>
-                            </View>
-                        }
-                    >
-                        <View style={styles.mainHeader}>
-                            <TouchableOpacity onPress={() => {
-                                this.openControlPanel()
-                            }}>
-                                <Image source={require('../imgs/user_list.png')}
-                                       style={styles.show_side_menu}
-                                       onPress={() => {
-                                           this.openControlPanel()
-                                       }}>
-                                </Image>
-                            </TouchableOpacity>
-                            <Text style={styles.logo}>Sendroid</Text>
-                            <TouchableOpacity>
-                                <Image source={require('../imgs/icon_search.png')} style={styles.icon_search}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Image source={require('../imgs/icon_ring.png')} style={styles.icon_ring}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Image source={require('../imgs/icon_true.png')} style={styles.icon_true}/>
-                            </TouchableOpacity>
-                        </View>
-
-                        {
-                            renderTabScreen
-                        }
-
-                        <ActionButton
-                            buttonColor="rgba(231,76,60,1)"
-                            size={0.23 * Dimensions.get('window').width}
-                            position={"right"}
-                            offsetX={-0.03 * Dimensions.get('window').width}
-                            offsetY={-0.001 * Dimensions.get('window').height}
-                            onPress={() => this.showSellScreen()}
-                            renderIcon={() => (
-                                <View style={styles.actionButtonView}>
-                                    <Text style={styles.actionButtonText}>Sell</Text>
-                                    <Icon name="md-camera" style={styles.actionButtonIcon}/>
+                                    </Image>
+                                    <TouchableOpacity>
+                                        <Text style={styles.btnLogin}>User Login</Text>
+                                    </TouchableOpacity>
                                 </View>
-                            )}
-                        />
-                    </Drawer>
-                );
-                break;
-            case 2:
-                renderMainScreen = (
-                    <SellScreen/>
-                );
-                break;
-            default:
-                renderMainScreen = (
-                    <Drawer
-                        side="left" //抽屉方向 top／left／right／bottom
-                        dragging
-                        open={false}//默认是否打开抽屉
-                        tapToClose={true}//点击内容处 会关闭抽屉
-                        type='displace' //抽屉出现的方式：overlay：抽屉覆盖内容 static:抽屉一只在内容后面 打开的时内容会滑动，displace：不会覆盖的 进出
-                        openDrawerOffset={0.3} // 抽屉占整个屏幕的百分比（1-0.6=0.4）
-                        closedDrawerOffset={0}//关闭抽屉后 抽屉在屏幕中的显示比例
-                        styles={drawerStyles}//抽屉样式，背景色 透明度，阴影啥的
-                        ref={(ref) => this._drawer = ref}
-                        content={
-                            <View style={{flex: 1, backgroundColor: '#a2a2a2'}}>
-                                <StatusBar backgroundColor={"#ffffff"}/>
-
-                                <ImageBackground
-                                    style={styles.user_list_background}
-                                    source={require('../imgs/user_background.jpg')}>
-                                    <View style={styles.user}>
-                                        <Image source={require('../imgs/user_profile.png')}
-                                               size={28}
-                                               style={styles.userProfile}
-                                               onPress={() => {
-                                                   this.openControlPanel()
-                                               }}>
-
-                                        </Image>
-                                        <TouchableOpacity>
-                                            <Text style={styles.btnLogin}>User Login</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.user_listView}>
-                                        <ListView
-                                            dataSource={this.state.dataSource.cloneWithRows(this.state.userFunction)}
-                                            renderRow={this.renderUser.bind(this)}
-                                        />
-                                    </View>
-                                </ImageBackground>
-                            </View>
-                        }
-                    >
-                        <View style={styles.mainHeader}>
-                            <TouchableOpacity onPress={() => {
-                                this.openControlPanel()
-                            }}>
-                                <Image source={require('../imgs/user_list.png')}
-                                       style={styles.show_side_menu}
-                                       onPress={() => {
-                                           this.openControlPanel()
-                                       }}>
-                                </Image>
-                            </TouchableOpacity>
-                            <Text style={styles.logo}>Sendroid</Text>
-                            <TouchableOpacity>
-                                <Image source={require('../imgs/icon_search.png')} style={styles.icon_search}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Image source={require('../imgs/icon_ring.png')} style={styles.icon_ring}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Image source={require('../imgs/icon_true.png')} style={styles.icon_true}/>
-                            </TouchableOpacity>
-                        </View>
-                        <View>
-                            <ListView
-                                style={styles.tabList}
-                                dataSource={this.state.dataSource.cloneWithRows(this.state.tabName)}
-                                renderRow={this.renderTab}
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                            />
-                        </View>
-                        {
-                            renderTabScreen
-                        }
-                        <ActionButton
-                            buttonColor="rgba(231,76,60,1)"
-                            size={0.23 * Dimensions.get('window').width}
-                            position={"right"}
-                            offsetX={-0.03 * Dimensions.get('window').width}
-                            offsetY={-0.001 * Dimensions.get('window').height}
-                            onPress={() => {
-                                alert('你点了我！')
-                            }}
-                            renderIcon={() => (
-                                <View style={styles.actionButtonView}>
-                                    <Text style={styles.actionButtonText}>Sell</Text>
-                                    <Icon name="md-camera" style={styles.actionButtonIcon}/>
+                                <View style={styles.user_listView}>
+                                    <ListView
+                                        dataSource={this.state.dataSource.cloneWithRows(this.state.userFunction)}
+                                        renderRow={this.renderUser.bind(this)}
+                                    />
                                 </View>
-                            )}
-                        />
-                    </Drawer>
-                );
-                break;
-        }
+                            </ImageBackground>
+                        </View>
+                    }
+                >
+                    <View style={Platform.OS === 'android' ? styles.mainHeader : styles.mainHeader_ios}>
+                        <TouchableOpacity onPress={() => {
+                            this.openControlPanel()
+                        }}>
+                            <Image source={require('../imgs/user_list.png')}
+                                   style={styles.show_side_menu}
+                                   onPress={() => {
+                                       this.openControlPanel()
+                                   }}>
+                            </Image>
+                        </TouchableOpacity>
+                        <Text style={styles.logo}>Sendroid</Text>
+                        <TouchableOpacity>
+                            <Image source={require('../imgs/icon_search.png')} style={styles.icon_search}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Image source={require('../imgs/icon_ring.png')} style={styles.icon_ring}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Image source={require('../imgs/icon_true.png')} style={styles.icon_true}/>
+                        </TouchableOpacity>
+                    </View>
+
+                    {
+                        renderTabScreen
+                    }
+
+                    <ActionButton
+                        buttonColor="rgba(231,76,60,1)"
+                        size={0.23 * Dimensions.get('window').width}
+                        position={"right"}
+                        offsetX={-0.03 * Dimensions.get('window').width}
+                        offsetY={-0.001 * Dimensions.get('window').height}
+                        onPress={() => this.showSellScreen()}
+                        renderIcon={() => (
+                            <View style={styles.actionButtonView}>
+                                <Text style={styles.actionButtonText}>Sell</Text>
+                                <Icon name="md-camera" style={styles.actionButtonIcon}/>
+                            </View>
+                        )}
+                    />
+                </Drawer>
+        );
+
         return (
             renderMainScreen
         );
@@ -385,13 +281,20 @@ export default class StoreNavigator extends React.Component {
 }
 
 const drawerStyles = {
-    drawer: {flex: 1, backgroundColor: '#000', shadowColor: '#c0c0c0', opacity: 1, shadowRadius: 3},
+    drawer: {flex: 1, backgroundColor: '#fff', shadowColor: '#fff', opacity: 1, shadowRadius: 3},
 };
 
 const styles = StyleSheet.create({
     mainHeader: {
         width: 1 * Dimensions.get('window').width,
         height: 0.06 * Dimensions.get('window').height,
+        backgroundColor: '#ffffff',
+        flexDirection: 'row',
+    },
+    mainHeader_ios: {
+        width: 1 * Dimensions.get('window').width,
+        height: 0.09 * Dimensions.get('window').height,
+        paddingTop: 0.03 * Dimensions.get('window').height,
         backgroundColor: '#ffffff',
         flexDirection: 'row',
     },
@@ -431,7 +334,7 @@ const styles = StyleSheet.create({
         width: 1 * Dimensions.get('window').width,
         flexDirection: 'row',
         backgroundColor: 'rgba(0,0,0,0.3)',
-        height: 90
+        height: 90,
     },
     user_listView: {
         flex: 1,
@@ -452,6 +355,7 @@ const styles = StyleSheet.create({
         marginLeft: 0.06 * Dimensions.get('window').width,
     },
     user_list_item_text: {
+        width: 0.2 * Dimensions.get('window').width,
         marginTop: 0.023 * Dimensions.get('window').height,
         marginLeft: 0.06 * Dimensions.get('window').width,
         fontSize: 15,
@@ -464,13 +368,13 @@ const styles = StyleSheet.create({
     },
     userProfile: {
         width: 50,
-        marginTop: 20,
+        marginTop: 40,
         height: 50,
         marginLeft: 20
     },
     btnLogin: {
         width: 400,
-        marginTop: 30,
+        marginTop: 50,
         height: 50,
         marginLeft: 10,
         fontSize: 20,

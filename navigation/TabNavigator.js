@@ -40,6 +40,7 @@ export default TabNavigator(
 
         }),
         tabBarComponent: TabBarTop,
+        tabBarPosition: 'top',
         showLabel: false,
         SwitchView: true,
         animationEnabled: true,
