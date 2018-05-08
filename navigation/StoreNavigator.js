@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
         marginLeft: 0.06 * Dimensions.get('window').width,
     },
     user_list_item_text: {
-        width: 0.2 * Dimensions.get('window').width,
+        width: 0.3 * Dimensions.get('window').width,
         marginTop: 0.023 * Dimensions.get('window').height,
         marginLeft: 0.06 * Dimensions.get('window').width,
         fontSize: 15,
