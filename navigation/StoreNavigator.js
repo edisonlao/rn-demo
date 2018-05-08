@@ -74,88 +74,88 @@ export default class StoreNavigator extends React.Component {
     render() {
         let renderTabScreen = <TabNavigator/>;
         let renderMainScreen = (
-                <Drawer
-                    side="left" //抽屉方向 top／left／right／bottom
-                    dragging
-                    open={false}//默认是否打开抽屉
-                    tapToClose={true}//点击内容处 会关闭抽屉
-                    type='displace' //抽屉出现的方式：overlay：抽屉覆盖内容 static:抽屉一只在内容后面 打开的时内容会滑动，displace：不会覆盖的 进出
-                    openDrawerOffset={0.3} // 抽屉占整个屏幕的百分比（1-0.6=0.4）
-                    closedDrawerOffset={0}//关闭抽屉后 抽屉在屏幕中的显示比例
-                    styles={drawerStyles}//抽屉样式，背景色 透明度，阴影啥的
-                    ref={(ref) => this._drawer = ref}
-                    content={
-                        <View style={{flex: 1, backgroundColor: '#a2a2a2'}}>
-                            <StatusBar backgroundColor={"#ffffff"}/>
+            <Drawer
+                side="left" //抽屉方向 top／left／right／bottom
+                dragging
+                open={false}//默认是否打开抽屉
+                tapToClose={true}//点击内容处 会关闭抽屉
+                type='displace' //抽屉出现的方式：overlay：抽屉覆盖内容 static:抽屉一只在内容后面 打开的时内容会滑动，displace：不会覆盖的 进出
+                openDrawerOffset={0.3} // 抽屉占整个屏幕的百分比（1-0.6=0.4）
+                closedDrawerOffset={0}//关闭抽屉后 抽屉在屏幕中的显示比例
+                styles={drawerStyles}//抽屉样式，背景色 透明度，阴影啥的
+                ref={(ref) => this._drawer = ref}
+                content={
+                    <View style={{flex: 1, backgroundColor: '#a2a2a2'}}>
+                        <StatusBar backgroundColor={"#ffffff"}/>
 
-                            <ImageBackground
-                                style={styles.user_list_background}
-                                source={require('../imgs/user_background.jpg')}>
-                                <View style={styles.user}>
-                                    <Image source={require('../imgs/user_profile.png')}
-                                           size={28}
-                                           style={styles.userProfile}
-                                           onPress={() => {
-                                               this.openControlPanel()
-                                           }}>
+                        <ImageBackground
+                            style={styles.user_list_background}
+                            source={require('../imgs/user_background.jpg')}>
+                            <View style={styles.user}>
+                                <Image source={require('../imgs/user_profile.png')}
+                                       size={28}
+                                       style={styles.userProfile}
+                                       onPress={() => {
+                                           this.openControlPanel()
+                                       }}>
 
-                                    </Image>
-                                    <TouchableOpacity>
-                                        <Text style={styles.btnLogin}>User Login</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.user_listView}>
-                                    <ListView
-                                        dataSource={this.state.dataSource.cloneWithRows(this.state.userFunction)}
-                                        renderRow={this.renderUser.bind(this)}
-                                    />
-                                </View>
-                            </ImageBackground>
-                        </View>
-                    }
-                >
-                    <View style={Platform.OS === 'android' ? styles.mainHeader : styles.mainHeader_ios}>
-                        <TouchableOpacity onPress={() => {
-                            this.openControlPanel()
-                        }}>
-                            <Image source={require('../imgs/user_list.png')}
-                                   style={styles.show_side_menu}
-                                   onPress={() => {
-                                       this.openControlPanel()
-                                   }}>
-                            </Image>
-                        </TouchableOpacity>
-                        <Text style={styles.logo}>Sendroid</Text>
-                        <TouchableOpacity>
-                            <Image source={require('../imgs/icon_search.png')} style={styles.icon_search}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Image source={require('../imgs/icon_ring.png')} style={styles.icon_ring}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Image source={require('../imgs/icon_true.png')} style={styles.icon_true}/>
-                        </TouchableOpacity>
-                    </View>
-
-                    {
-                        renderTabScreen
-                    }
-
-                    <ActionButton
-                        buttonColor="rgba(231,76,60,1)"
-                        size={0.23 * Dimensions.get('window').width}
-                        position={"right"}
-                        offsetX={-0.03 * Dimensions.get('window').width}
-                        offsetY={-0.001 * Dimensions.get('window').height}
-                        onPress={() => this.showSellScreen()}
-                        renderIcon={() => (
-                            <View style={styles.actionButtonView}>
-                                <Text style={styles.actionButtonText}>Sell</Text>
-                                <Icon name="md-camera" style={styles.actionButtonIcon}/>
+                                </Image>
+                                <TouchableOpacity>
+                                    <Text style={styles.btnLogin}>User Login</Text>
+                                </TouchableOpacity>
                             </View>
-                        )}
-                    />
-                </Drawer>
+                            <View style={styles.user_listView}>
+                                <ListView
+                                    dataSource={this.state.dataSource.cloneWithRows(this.state.userFunction)}
+                                    renderRow={this.renderUser.bind(this)}
+                                />
+                            </View>
+                        </ImageBackground>
+                    </View>
+                }
+            >
+                <View style={Platform.OS === 'android' ? styles.mainHeader : styles.mainHeader_ios}>
+                    <TouchableOpacity onPress={() => {
+                        this.openControlPanel()
+                    }}>
+                        <Image source={require('../imgs/user_list.png')}
+                               style={styles.show_side_menu}
+                               onPress={() => {
+                                   this.openControlPanel()
+                               }}>
+                        </Image>
+                    </TouchableOpacity>
+                    <Text style={styles.logo}>Sendroid</Text>
+                    <TouchableOpacity>
+                        <Image source={require('../imgs/icon_search.png')} style={styles.icon_search}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../imgs/icon_ring.png')} style={styles.icon_ring}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={require('../imgs/icon_true.png')} style={styles.icon_true}/>
+                    </TouchableOpacity>
+                </View>
+
+                {
+                    renderTabScreen
+                }
+
+                <ActionButton
+                    buttonColor="rgba(231,76,60,1)"
+                    size={0.23 * Dimensions.get('window').width}
+                    position={"right"}
+                    offsetX={-0.03 * Dimensions.get('window').width}
+                    offsetY={-0.001 * Dimensions.get('window').height}
+                    onPress={() => this.showSellScreen()}
+                    renderIcon={() => (
+                        <View style={styles.actionButtonView}>
+                            <Text style={styles.actionButtonText}>Sell</Text>
+                            <Icon name="md-camera" style={styles.actionButtonIcon}/>
+                        </View>
+                    )}
+                />
+            </Drawer>
         );
 
         return (
@@ -165,10 +165,10 @@ export default class StoreNavigator extends React.Component {
 
     renderUser(rowData) {
         let userView;
-        if(rowData.function === 'position'){
+        if (rowData.function === 'position') {
             userView = (
                 <TouchableOpacity
-                    onPress = {() => this.getPosition()}
+                    onPress={() => this.getPosition()}
                     activeOpacity={0.5}>
                     <View style={styles.user_list_item}>
                         <Image
@@ -181,7 +181,7 @@ export default class StoreNavigator extends React.Component {
                     </View>
                 </TouchableOpacity>
             )
-        }else {
+        } else {
             userView = (
                 <TouchableOpacity
                     activeOpacity={0.5}>
@@ -215,16 +215,26 @@ export default class StoreNavigator extends React.Component {
                     "\n海拔：" + location.coords.altitude +
                     "\n海拔准确度：" + location.coords.altitudeAccuracy +
                     "\n时间戳：" + location.timestamp;
-                let locationUrl = 'http://restapi.amap.com/v3/geocode/regeo?';
-                locationUrl += "location="
-                locationUrl += location.coords.longitude;
-                locationUrl += ",";
+                /**高德地图**/
+                // let locationUrl = 'http://restapi.amap.com/v3/geocode/regeo?';
+                // locationUrl += "location="
+                // locationUrl += location.coords.longitude;
+                // locationUrl += ",";
+                // locationUrl += location.coords.latitude;
+                // if(Platform.OS === "ios"){
+                //     locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
+                // }else if(Platform.OS === "android") {
+                //     locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
+                // }
+
+                /**谷歌地图**/
+                let locationUrl = 'https://maps.google.com/maps/api/geocode/json?';
+                locationUrl += "latlng=";
                 locationUrl += location.coords.latitude;
-                if(Platform.OS === "ios"){
-                    locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
-                }else if(Platform.OS === "android") {
-                    locationUrl += "&key=2493ecdfa26c984c44b34943b4845b18";
-                }
+                locationUrl += ",";
+                locationUrl += location.coords.longitude;
+                locationUrl += "&key=AIzaSyDeL7vgqBU0ch6oPPwffsGJIUI_pcOp-_w";
+                // locationUrl  += "&key=AIzaSyCPPBwq1jkj6dAfxdyuONLc_3NJCyWbgK4";
                 const init = {
                     method: 'GET',
                     headers: {
@@ -236,29 +246,35 @@ export default class StoreNavigator extends React.Component {
                 fetch(locationUrl, init)
                     .then((response) => response.json())
                     .then((responseJson) => {
-                        if(responseJson.regeocode.addressComponent.city.toString() === ""){
-                            this.setState({
-                                cityName: '番禺'
-                            })
-                        }else {
-                            this.setState({
-                                cityName: responseJson.regeocode.addressComponent.city,
-                                position: responseJson.regeocode.addressComponent.city,
-                            });
-                        }
-                        emitter.emit("cityName", this.state.cityName);
-                        emitter.emit("cityIndex", 0);
-                        if(Platform.OS === "android") {
-                            NativeModules
-                                .NewGPSModule
-                                .startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", this.state.cityName);
-                        }
+                        setTimeout(function () {
+                            let city = responseJson.results[0].address_components[3].long_name.toString();
+                            if (city === "") {
+                                this.setState({
+                                    cityName: ''
+                                })
+                            } else {
+                                this.setState({
+                                    cityName: city,
+                                    position: city,
+                                });
+                            }
+                            emitter.emit("cityName", this.state.cityName);
+                            emitter.emit("cityIndex", 0);
+                            if (Platform.OS === "android") {
+                                NativeModules
+                                    .NewGPSModule
+                                    .startActivityFromJS("com.myproject.modules.OpenGPSModule", "manual", this.state.cityName);
+                            }
+                        }.bind(this), 100);
                     })
-                    .catch(e => {Alert.alert('error',`${e}`)});
+                    .catch(e => {
+                        alert('error:', `${e}`)
+                    });
+
 
             },
             error => {
-                if(Platform.OS === "android") {
+                if (Platform.OS === "android") {
                     Alert.alert("定位失败", "请打开GPS", [
                         {
                             text: '打开GPS',
@@ -266,7 +282,7 @@ export default class StoreNavigator extends React.Component {
                         },
                         {text: '取消', onPress: () => ToastAndroid.show('已取消', ToastAndroid.SHORT)}
                     ])
-                }else if(Platform.OS === "ios"){
+                } else if (Platform.OS === "ios") {
                     AlertIOS.alert("定位失败", "请打开GPS", [
                         {
                             text: '打开GPS',

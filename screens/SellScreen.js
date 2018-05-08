@@ -24,10 +24,10 @@ import { isIphoneX } from 'react-native-iphone-x-helper';
 
 var ImagePicker = require('react-native-image-picker');
 const options = {
-    title: '选择图片',
-    cancelButtonTitle: '取消',
-    takePhotoButtonTitle: '拍照',
-    chooseFromLibraryButtonTitle: '图片库',
+    title: 'Select picture',
+    cancelButtonTitle: 'Cancel',
+    takePhotoButtonTitle: 'Camera',
+    chooseFromLibraryButtonTitle: 'Picture',
     cameraType: 'back',
     mediaType: 'photo',
     videoQuality: 'high',
